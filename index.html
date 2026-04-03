@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyberpunk RED — Mesa Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, get, onValue, push, remove, serverTimestamp, update }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// ─── FIREBASE CONFIG ─────────────────────────────────────────────
+// Substitua com sua configuração do Firebase Console
+// Instruções: https://console.firebase.google.com → Criar Projeto → Realtime Database
+const firebaseConfig = {
+  apiKey: "AIzaSyD3NOMlLrQTTHYtFm_J91j1SFU8cOp1kG0",
+  authDomain: "cyberpunkred-48a5e.firebaseapp.com",
+  projectId: "cyberpunkred-48a5e",
+  storageBucket: "cyberpunkred-48a5e.firebasestorage.app",
+  messagingSenderId: "351008003096",
+  appId: "1:351008003096:web:3fd9c760f6fccb39f81f6d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+window._db = db;
+window._dbRef = ref;
+window._dbSet = set;
+window._dbGet = get;
+window._dbOnValue = onValue;
+window._dbPush = push;
+window._dbRemove = remove;
+window._dbTs = serverTimestamp;
+window._dbUpdate = update;
+window._firebaseReady = true;
+document.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<style>
+:root{
+  --bg:#050609;--panel:#09090e;--panel2:#0d0d14;--border:#0e1a2a;
+  --red:#ff003c;--red2:#ff3060;--yel:#f5c518;--blu:#00d4ff;--blu2:#66e8ff;
+  --cyan:#00ffcc;--cyan2:#00c49a;--text:#c8dde8;--dim:#2a4a5a;
+  --mono:'Share Tech Mono',monospace;--disp:'Orbitron',sans-serif;--fm:'Rajdhani',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--fm);font-size:15px;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 0%,#0a1a2a 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 59px,#0a1520 59px,#0a1520 60px),
+    repeating-linear-gradient(90deg,transparent,transparent 59px,#0a1520 59px,#0a1520 60px);
+}
+
+.lobby{width:100%;max-width:520px;padding:24px 20px;}
+
+/* LOGO */
+.logo{text-align:center;margin-bottom:36px;}
+.logo .cy{font-family:var(--disp);font-size:2.2rem;color:var(--red);letter-spacing:3px;display:block;text-shadow:0 0 20px #ff003c88;}
+.logo .pu{font-family:var(--disp);font-size:2.2rem;color:var(--blu);letter-spacing:3px;display:block;text-shadow:0 0 16px #00d4ff66;}
+.logo .re{font-family:var(--disp);font-size:1rem;color:var(--cyan);letter-spacing:8px;margin-top:2px;display:block;text-shadow:0 0 12px #00ffcc66;}
+.logo .sub{font-family:var(--mono);font-size:0.65rem;color:var(--dim);letter-spacing:4px;margin-top:12px;display:block;}
+
+/* CARDS */
+.card{background:var(--panel);border:1px solid var(--border);padding:24px;margin-bottom:16px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.card.master::before{background:linear-gradient(90deg,var(--red),transparent);}
+.card.player::before{background:linear-gradient(90deg,var(--cyan),transparent);}
+.card-title{font-family:var(--disp);font-size:0.7rem;letter-spacing:4px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card.master .card-title{color:var(--red);}
+.card.player .card-title{color:var(--cyan);}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+label{display:block;font-family:var(--mono);font-size:0.62rem;color:var(--dim);letter-spacing:1px;margin-bottom:4px;text-transform:uppercase;}
+input[type=text]{
+  width:100%;background:#060a10;border:1px solid var(--border);border-bottom:1px solid var(--blu);
+  color:var(--text);font-family:var(--mono);font-size:0.9rem;padding:8px 10px;outline:none;
+  transition:border-color .2s;margin-bottom:12px;letter-spacing:2px;
+}
+input:focus{border-color:var(--blu);box-shadow:0 2px 0 var(--blu);}
+.card.master input{border-bottom-color:var(--red);}
+.card.master input:focus{border-color:var(--red);box-shadow:0 2px 0 var(--red);}
+.card.player input.code-input{border-bottom-color:var(--yel);font-size:1.1rem;text-align:center;text-transform:uppercase;letter-spacing:6px;}
+.card.player input.code-input:focus{border-color:var(--yel);box-shadow:0 2px 0 var(--yel);}
+
+.btn{
+  width:100%;background:transparent;font-family:var(--mono);font-size:0.72rem;
+  padding:10px 16px;cursor:pointer;letter-spacing:3px;transition:all .2s;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.btn.red{border:1px solid var(--red);color:var(--red);background:#ff003c08;}
+.btn.red:hover{background:#ff003c20;box-shadow:0 0 16px #ff003c44;}
+.btn.cyan{border:1px solid var(--cyan);color:var(--cyan);background:#00ffcc08;}
+.btn.cyan:hover{background:#00ffcc20;box-shadow:0 0 16px #00ffcc44;}
+
+/* STATUS */
+.status{font-family:var(--mono);font-size:0.65rem;color:var(--dim);text-align:center;margin-top:10px;letter-spacing:1px;min-height:18px;}
+.status.ok{color:var(--cyan);}
+.status.err{color:var(--red);}
+
+/* CONFIG WARNING */
+.config-warning{
+  background:#1a0810;border:1px solid var(--red);padding:16px;margin-bottom:20px;
+  font-family:var(--mono);font-size:0.65rem;color:var(--red);line-height:1.8;
+}
+.config-warning a{color:var(--yel);text-decoration:none;}
+.config-warning a:hover{text-decoration:underline;}
+.config-warning code{
+  background:#0a0508;border:1px solid #3a0018;padding:2px 6px;
+  color:var(--yel);font-size:0.7rem;display:block;margin:8px 0;line-height:1.6;white-space:pre-wrap;word-break:break-all;
+}
+
+.divider{text-align:center;font-family:var(--mono);font-size:0.6rem;color:var(--dim);letter-spacing:4px;margin:8px 0;}
+</style>
+</head>
+<body>
+
+<div class="lobby">
+  <div class="logo">
+    <span class="cy">CYBER</span>
+    <span class="pu">PUNK</span>
+    <span class="re">RED</span>
+    <span class="sub">◈ MESA ONLINE MULTIPLAYER ◈</span>
+  </div>
+
+  <!-- Config warning shown if Firebase not configured -->
+  <div class="config-warning" id="config-warn" style="display:none">
+    ⚠ FIREBASE NÃO CONFIGURADO<br><br>
+    Para usar o multiplayer, você precisa:<br>
+    1. Criar um projeto em <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a><br>
+    2. Ativar o <strong>Realtime Database</strong> (modo de teste)<br>
+    3. Copiar sua configuração e substituir no arquivo <strong>index.html</strong> (bloco firebaseConfig)<br><br>
+    Configuração atual (substitua):
+    <code>apiKey: "AIzaSyDEMO_substitua_sua_chave_aqui"
+databaseURL: "https://seu-projeto-default-rtdb.firebaseio.com"</code>
+    Enquanto isso, use o modo <strong>LOCAL</strong> para testar a ficha sem multiplayer →
+    <br><br>
+    <a href="sheet.html">▶ ABRIR FICHA LOCAL (sem multiplayer)</a>
+  </div>
+
+  <!-- MESTRE -->
+  <div class="card master">
+    <div class="card-title">⚔ MESTRE DA SESSÃO</div>
+    <label>Seu nome / apelido</label>
+    <input type="text" id="master-name" placeholder="Ex: GM, Narrador..." maxlength="30">
+    <label>Nome da campanha (opcional)</label>
+    <input type="text" id="campaign-name" placeholder="Ex: Night City Blues..." maxlength="40">
+    <button class="btn red" onclick="createSession()">⚡ CRIAR NOVA SESSÃO</button>
+    <div class="status" id="master-status"></div>
+  </div>
+
+  <div class="divider">── ou ──</div>
+
+  <!-- JOGADOR -->
+  <div class="card player">
+    <div class="card-title">🎲 JOGADOR</div>
+    <label>Seu nome / handle</label>
+    <input type="text" id="player-name" placeholder="Ex: V, Johnny, Rogue..." maxlength="30">
+    <label>Código da sessão (receba do Mestre)</label>
+    <input type="text" id="session-code" class="code-input" placeholder="EX: NEON-4729" maxlength="10">
+    <button class="btn cyan" onclick="joinSession()">▶ ENTRAR NA SESSÃO</button>
+    <div class="status" id="player-status"></div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// Gera código de sessão tipo NEON-4729
+// ─────────────────────────────────────────────
+function genCode(){
+  const words=['NEON','GRID','HACK','CORP','RIPP','GANG','DARK','EDGE','WIRE','VOLT','GLAM','NOIR','JACK','LINK','NODE'];
+  const w = words[Math.floor(Math.random()*words.length)];
+  const n = String(Math.floor(Math.random()*9000)+1000);
+  return w+'-'+n;
+}
+
+function status(id, msg, type=''){
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'status ' + type;
+}
+
+// ─────────────────────────────────────────────
+// Aguarda Firebase carregar
+// ─────────────────────────────────────────────
+function waitForFirebase(cb){
+  if(window._firebaseReady){ cb(); return; }
+  document.addEventListener('firebase-ready', cb, {once:true});
+  // Timeout para detectar config errada
+  setTimeout(()=>{
+    if(!window._firebaseReady) document.getElementById('config-warn').style.display='block';
+  }, 4000);
+}
+
+// ─────────────────────────────────────────────
+// CRIAR SESSÃO (Mestre)
+// ─────────────────────────────────────────────
+function createSession(){
+  const name = document.getElementById('master-name').value.trim();
+  if(!name){ status('master-status','⚠ Digite seu nome antes de criar a sessão.','err'); return; }
+
+  status('master-status','Aguardando Firebase...','');
+  waitForFirebase(async ()=>{
+    const code = genCode();
+    const campaign = document.getElementById('campaign-name').value.trim() || 'Sessão';
+    const {_db,_dbRef,_dbSet,_dbTs} = window;
+
+    try {
+      await _dbSet(_dbRef(_db, 'sessions/'+code), {
+        code,
+        campaign,
+        master: name,
+        createdAt: Date.now(),
+        players: {},
+        chat: {},
+        diceLog: {}
+      });
+      status('master-status','✓ Sessão criada! Redirecionando...','ok');
+      setTimeout(()=>{
+        window.location.href = `master.html?session=${code}&name=${encodeURIComponent(name)}`;
+      }, 800);
+    } catch(e){
+      status('master-status','⚠ Erro ao criar sessão. Firebase configurado?','err');
+      document.getElementById('config-warn').style.display='block';
+      console.error(e);
+    }
+  });
+}
+
+// ─────────────────────────────────────────────
+// ENTRAR NA SESSÃO (Jogador)
+// ─────────────────────────────────────────────
+function joinSession(){
+  const name = document.getElementById('player-name').value.trim();
+  const code = document.getElementById('session-code').value.trim().toUpperCase();
+  if(!name){ status('player-status','⚠ Digite seu nome/handle.','err'); return; }
+  if(!code){ status('player-status','⚠ Digite o código da sessão.','err'); return; }
+
+  status('player-status','Verificando sessão...','');
+  waitForFirebase(async ()=>{
+    const {_db,_dbRef,_dbGet,_dbSet,_dbTs} = window;
+    try {
+      const snap = await _dbGet(_dbRef(_db, 'sessions/'+code));
+      if(!snap.exists()){
+        status('player-status','⚠ Sessão não encontrada. Código correto?','err'); return;
+      }
+      // Registra jogador na sessão
+      const playerId = 'p_'+Date.now();
+      await _dbSet(_dbRef(_db, 'sessions/'+code+'/players/'+playerId), {
+        name, joinedAt: Date.now(), online: true
+      });
+      status('player-status','✓ Conectado! Entrando...','ok');
+      setTimeout(()=>{
+        window.location.href = `sheet.html?session=${code}&player=${playerId}&name=${encodeURIComponent(name)}`;
+      }, 800);
+    } catch(e){
+      status('player-status','⚠ Erro ao entrar. Firebase configurado?','err');
+      document.getElementById('config-warn').style.display='block';
+      console.error(e);
+    }
+  });
+}
+
+// Enter key shortcuts
+document.getElementById('session-code').addEventListener('keydown', e=>{ if(e.key==='Enter') joinSession(); });
+document.getElementById('player-name').addEventListener('keydown', e=>{ if(e.key==='Enter') joinSession(); });
+document.getElementById('master-name').addEventListener('keydown', e=>{ if(e.key==='Enter') createSession(); });
+</script>
+</body>
+</html>

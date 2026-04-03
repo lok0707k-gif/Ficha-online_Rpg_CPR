@@ -1,0 +1,2419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyberpunk RED — Ficha</title>
+<!-- FIREBASE MULTIPLAYER -->
+<script type="module" src="firebase-init.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050609;--panel:#09090e;--panel2:#0d0d14;--border:#0e1a2a;
+  --red:#ff003c;--red2:#ff3060;--red3:#6a0018;
+  --yel:#f5c518;--yel2:#ffe066;
+  --blu:#00d4ff;--blu2:#66e8ff;--blu3:#003a52;
+  --cyan:#00ffcc;--cyan2:#00c49a;
+  --text:#c8dde8;--dim:#2a4a5a;
+  --mono:'Share Tech Mono',monospace;--disp:'Orbitron',sans-serif;--fm:'Rajdhani',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--fm);font-size:15px;min-height:100vh;
+  background-image:
+  radial-gradient(ellipse 80% 60% at 50% 0%,#0a1a2a 0%,transparent 60%),
+  repeating-linear-gradient(0deg,transparent,transparent 59px,#0a1520 59px,#0a1520 60px),
+  repeating-linear-gradient(90deg,transparent,transparent 59px,#0a1520 59px,#0a1520 60px);}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px 60px;}
+
+/* HEADER */
+header{display:flex;align-items:center;gap:18px;border-bottom:2px solid var(--blu);padding:20px 0 16px;
+  box-shadow:0 2px 30px #00d4ff22,0 0 60px #00d4ff08;
+  background:linear-gradient(180deg,#050d15 0%,transparent 100%);}
+.logo .cy{font-family:var(--disp);font-size:2rem;color:var(--red);letter-spacing:3px;display:block;text-shadow:0 0 20px #ff003c88;}
+.logo .pu{font-family:var(--disp);font-size:2rem;color:var(--blu);letter-spacing:3px;display:block;text-shadow:0 0 16px #00d4ff66;}
+.logo .re{font-family:var(--disp);font-size:1rem;color:var(--cyan);letter-spacing:8px;margin-top:2px;display:block;text-shadow:0 0 12px #00ffcc66;}
+.hbtns{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+.hb{background:transparent;font-family:var(--mono);font-size:0.68rem;padding:6px 12px;cursor:pointer;letter-spacing:2px;transition:all .2s;}
+.hb.b1{border:1px solid var(--cyan);color:var(--cyan);background:#00ffcc08;}
+.hb.b2{border:1px solid var(--yel);color:var(--yel);background:#f5c51808;}
+.hb.b3{border:1px solid var(--red);color:var(--red);background:#ff003c08;}
+.hb.b4{border:1px solid #1a3a4a;color:#1a3a4a;}
+.hb:hover{filter:brightness(1.6);box-shadow:0 0 12px currentColor;}
+
+/* PAGE TABS */
+.ptabs{display:flex;border-bottom:2px solid #0a1a28;background:#07070d;}
+.ptab{font-family:var(--disp);font-size:0.6rem;letter-spacing:4px;padding:14px 28px;cursor:pointer;
+  background:transparent;border:none;color:var(--dim);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
+.ptab:hover{color:var(--blu2);}
+.ptab.on{color:var(--blu);border-bottom-color:var(--blu);text-shadow:0 0 10px #00d4ff88;}
+.ptab.on.t2{color:var(--cyan);border-bottom-color:var(--cyan);}
+.pane{display:none;padding-top:24px;}.pane.on{display:block;}
+
+/* LAYOUT */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.gap{margin-top:16px;}
+
+/* PANEL */
+.box{background:var(--panel);border:1px solid var(--border);border-top:2px solid var(--blu);
+  padding:16px;position:relative;}
+.box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blu),transparent);pointer-events:none;}
+.box.y{border-top-color:var(--yel);}
+.box.y::before{background:linear-gradient(90deg,var(--yel),transparent);}
+.box.b{border-top-color:var(--cyan);}
+.box.b::before{background:linear-gradient(90deg,var(--cyan),transparent);}
+.box.r{border-top-color:var(--red);}
+.box.r::before{background:linear-gradient(90deg,var(--red),transparent);}
+.bt{font-family:var(--disp);font-size:0.65rem;color:var(--blu);letter-spacing:4px;text-transform:uppercase;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.bt::after{content:'';flex:1;height:1px;background:var(--border);}
+.box.y .bt{color:var(--yel);}
+.box.b .bt{color:var(--cyan);}
+.box.r .bt{color:var(--red);}
+label{display:block;font-family:var(--mono);font-size:0.65rem;color:var(--dim);letter-spacing:1px;margin-bottom:3px;text-transform:uppercase;}
+input[type=text],input[type=number],select,textarea{
+  width:100%;background:#060a10;border:1px solid var(--border);border-bottom:1px solid var(--blu);
+  color:var(--text);font-family:var(--mono);font-size:0.85rem;padding:6px 8px;outline:none;
+  transition:border-color .2s,box-shadow .2s;appearance:none;-webkit-appearance:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--blu);box-shadow:0 2px 0 var(--blu),0 0 8px #00d4ff22;}
+textarea{resize:vertical;min-height:72px;}
+.f{margin-bottom:12px;}
+
+/* ─── STAT BOXES WITH ARROWS ─── */
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.sb{background:#07080f;border:1px solid #0a1828;border-bottom:2px solid var(--blu);padding:8px 6px 6px;text-align:center;position:relative;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));}
+.sb label{font-family:var(--disp);font-size:0.5rem;color:var(--dim);letter-spacing:2px;margin-bottom:4px;display:block;}
+.sb-val{font-family:var(--disp);font-size:1.6rem;color:var(--blu);font-weight:700;line-height:1;display:block;margin:2px 0;text-shadow:0 0 12px #00d4ff66;}
+.sb-arrows{display:flex;justify-content:center;gap:6px;margin-top:4px;}
+.sb-arrows button{
+  width:24px;height:20px;background:transparent;border:1px solid var(--border);color:var(--dim);
+  font-size:0.7rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);padding:0;line-height:1;
+}
+.sb-arrows button:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 6px var(--cyan);}
+.sb input[type=number]{display:none;}
+
+/* SKILL ROW */
+.sr{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.sr label{margin:0;flex:1;font-size:0.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sr input{width:48px;text-align:center;padding:4px;font-size:0.8rem;border-bottom-color:var(--cyan)!important;flex-shrink:0;}
+
+/* WOUND */
+.wrow{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.wrow label{width:90px;flex-shrink:0;margin:0;}
+.wrow .ww{display:flex;align-items:center;gap:6px;}
+.wrow .ww input{width:64px;text-align:center;font-size:1.1rem;}
+.sl{color:var(--dim);font-family:var(--mono);}
+.wboxes{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
+.wb{width:26px;height:26px;border:1px solid var(--border);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:transparent;user-select:none;transition:background .15s;}
+.wb.on{background:var(--red);border-color:var(--red);color:#fff;font-weight:700;box-shadow:0 0 8px var(--red);}
+.wb.dead{background:#2a0008;border-color:var(--red);color:var(--red);animation:pulse-red 1s infinite;}
+@keyframes pulse-red{0%,100%{box-shadow:0 0 4px var(--red)}50%{box-shadow:0 0 12px var(--red)}}
+
+/* HUMANITY PIPS */
+.hpips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.hp{width:14px;height:14px;border:1px solid var(--border);border-radius:50%;cursor:pointer;transition:background .15s;}
+.hp.on{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 4px var(--cyan);}
+
+/* DYNAMIC ROWS */
+.ar{display:grid;grid-template-columns:1fr 80px 60px 80px 28px;gap:8px;align-items:end;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.cr{display:grid;grid-template-columns:1fr 80px 60px 28px;gap:8px;align-items:end;margin-bottom:8px;}
+.del{width:26px;height:26px;background:transparent;border:1px solid var(--border);color:var(--dim);
+  font-size:0.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.del:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 6px var(--red);}
+.addbtn{margin-top:8px;background:transparent;border:1px solid #0a1a2a;color:var(--dim);
+  font-family:var(--mono);font-size:0.7rem;padding:5px 12px;cursor:pointer;letter-spacing:1px;transition:all .2s;
+  clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));}
+.addbtn:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 10px #00ffcc22;}
+
+/* ROLE ABILITY */
+.role-select-wrap{margin-bottom:12px;}
+.role-effect-box{background:#060a10;border:1px solid #0a1828;border-left:2px solid var(--yel);
+  padding:10px 12px;margin-top:8px;font-family:var(--mono);font-size:0.72rem;
+  color:var(--dim);line-height:1.6;min-height:48px;}
+.role-effect-box .eff-title{color:var(--yel);font-size:0.75rem;margin-bottom:4px;display:block;}
+
+/* INVENTORY */
+.itabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.itab{font-family:var(--mono);font-size:0.65rem;letter-spacing:2px;padding:5px 12px;cursor:pointer;
+  background:var(--panel2);border:1px solid var(--border);color:var(--dim);transition:all .2s;}
+.itab.on{border-color:var(--blu);color:var(--blu);background:#00d4ff10;}
+.itab:hover{border-color:var(--cyan);color:var(--cyan);}
+.ipane{display:none;}.ipane.on{display:block;}
+.ih{display:grid;gap:8px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border);}
+.ir{display:grid;gap:8px;align-items:center;margin-bottom:6px;}
+.ir.iw,.ih.iw{grid-template-columns:1fr 70px 55px 75px 55px 28px;}
+.ir.ia,.ih.ia{grid-template-columns:1fr 70px 60px 60px 28px;}
+.ir.ig,.ih.ig{grid-template-columns:1fr 120px 55px 28px;}
+.ir.id,.ih.id{grid-template-columns:1fr 140px 55px 28px;}
+.isum{font-family:var(--mono);font-size:0.7rem;color:var(--dim);margin-top:10px;padding-top:8px;border-top:1px solid var(--border);}
+.isum span{color:var(--yel);}
+
+/* ─── HUD ─── */
+.hid{display:grid;grid-template-columns:80px 1fr;gap:16px;align-items:start;}
+.hav{width:80px;height:80px;background:var(--panel2);border:1px solid var(--border);border-top:2px solid var(--red);
+  display:flex;align-items:center;justify-content:center;font-size:2.4rem;}
+.hname{font-family:var(--disp);font-size:1.5rem;color:var(--red);letter-spacing:2px;line-height:1.1;text-shadow:0 0 12px #e8002a55;}
+.hrole{font-family:var(--mono);font-size:0.75rem;color:var(--yel);margin-top:4px;}
+.htags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.htag{font-family:var(--mono);font-size:0.6rem;color:var(--dim);border:1px solid var(--border);padding:2px 8px;}
+/* HUD Stats */
+.hst{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.hsc{background:#07080f;border:1px solid #0a1828;border-bottom:2px solid var(--blu);padding:8px 6px 6px;text-align:center;}
+.hsc .hl{font-family:var(--disp);font-size:0.45rem;color:var(--dim);letter-spacing:2px;display:block;margin-bottom:4px;}
+.hsc .hv{font-family:var(--disp);font-size:1.5rem;color:var(--blu);font-weight:700;line-height:1;text-shadow:0 0 10px #00d4ff66;}
+/* HUD HP bar */
+.hbar{height:14px;background:var(--panel2);border:1px solid var(--border);margin-top:6px;overflow:hidden;}
+.hfill{height:100%;background:linear-gradient(90deg,#3a0010,var(--red));transition:width .4s;box-shadow:0 0 8px var(--red);}
+.hfill.ok{background:linear-gradient(90deg,#003030,var(--cyan));box-shadow:0 0 8px var(--cyan);}
+/* HUD wound boxes */
+.hwb{width:20px;height:20px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:transparent;}
+.hwb.on{background:var(--red);color:#fff;border-color:var(--red);}
+.hwb.dead{background:#3a0010;color:var(--red);border-color:var(--red);}
+/* HUD humanity pips */
+.hpp{width:12px;height:12px;border:1px solid var(--border);border-radius:50%;}
+.hpp.on{background:var(--yel);border-color:var(--yel);}
+/* HUD Skills */
+.hsk{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 16px;}
+.hskr{display:flex;align-items:center;gap:8px;}
+.hskr .n{flex:1;font-family:var(--mono);font-size:0.65rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hskr .v{font-family:var(--disp);font-size:0.9rem;color:var(--cyan);font-weight:700;min-width:22px;text-align:right;}
+/* HUD weapon rows */
+.hwr{display:grid;grid-template-columns:1fr 70px 55px 80px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);}
+.hwr:last-child{border-bottom:none;}
+.hwr .wn{font-family:var(--mono);font-size:0.8rem;color:var(--text);}
+.hwr .wd{font-family:var(--disp);font-size:0.85rem;color:var(--red);font-weight:700;text-shadow:0 0 8px var(--red);}
+.hwr .wr,.hwr .wl{font-family:var(--mono);font-size:0.7rem;color:var(--dim);}
+/* HUD cyber */
+.hcr{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:#07080f;border-left:2px solid var(--cyan);margin-bottom:4px;}
+.hcn{font-family:var(--mono);font-size:0.75rem;color:var(--text);}
+.hcl{font-family:var(--mono);font-size:0.65rem;color:var(--dim);}
+.him{font-family:var(--mono);font-size:0.7rem;color:var(--text);padding:3px 0;border-bottom:1px solid var(--border);}
+.empty{font-family:var(--mono);font-size:0.7rem;color:var(--dim);padding:10px 0;text-align:center;letter-spacing:2px;}
+/* Badges */
+.badge{font-family:var(--mono);font-size:0.65rem;letter-spacing:2px;padding:3px 10px;border:1px solid;display:inline-block;}
+.ok{border-color:var(--cyan);color:var(--cyan);background:#00ffcc10;}
+.warn{border-color:var(--yel);color:var(--yel);background:#f5c51810;}
+.crit{border-color:var(--red);color:var(--red);background:#ff003c10;}
+
+/* HUD EDITABLE — inputs in HUD pane */
+#pane-hud input[type=number]{
+  background:#060a10;border:1px solid var(--border);border-bottom:1px solid var(--blu);
+  color:var(--text);font-family:var(--mono);font-size:0.85rem;padding:4px 6px;outline:none;
+  width:70px;text-align:center;appearance:none;-webkit-appearance:none;}
+#pane-hud input[type=number]:focus{border-color:var(--cyan);box-shadow:0 2px 0 var(--cyan);}
+.hud-edit-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.hud-edit-row label{margin:0;font-family:var(--mono);font-size:0.6rem;color:var(--dim);letter-spacing:1px;white-space:nowrap;}
+.hud-big-num{font-family:var(--disp);font-size:1.5rem;font-weight:700;}
+.hslash{color:var(--dim);font-family:var(--mono);}
+
+/* ─── STAT TOOLTIP ─── */
+.sb{position:relative;}
+.stat-info{position:absolute;top:4px;right:4px;width:13px;height:13px;border-radius:50%;
+  background:transparent;border:1px solid var(--dim);color:var(--dim);font-size:0.5rem;cursor:help;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);line-height:1;user-select:none;z-index:2;}
+.stat-info:hover{border-color:var(--yel);color:var(--yel);}
+.stat-info .stip{
+  display:none;position:absolute;top:18px;left:50%;transform:translateX(-50%);
+  background:#0e0e12;border:1px solid var(--yel);border-left:2px solid var(--yel);
+  color:var(--text);font-family:var(--mono);font-size:0.62rem;padding:8px 10px;
+  width:200px;z-index:999;line-height:1.6;pointer-events:none;
+  box-shadow:0 4px 20px #00000099;}
+.stat-info .stip .stip-name{display:block;color:var(--yel);font-size:0.68rem;margin-bottom:4px;letter-spacing:1px;}
+.stat-info .stip .stip-uses{display:block;color:var(--blu);font-size:0.6rem;margin-top:4px;}
+.stat-info:hover .stip{display:block;}
+
+/* ─── AVATAR UPLOAD ─── */
+.avatar-upload-wrap{position:relative;width:100%;aspect-ratio:3/4;background:var(--panel2);
+  border:1px solid var(--border);border-top:2px solid var(--red);overflow:hidden;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:border-color .2s;}
+.avatar-upload-wrap:hover{border-color:var(--red2);}
+.avatar-upload-wrap img{width:100%;height:100%;object-fit:cover;display:none;}
+.avatar-upload-wrap img.loaded{display:block;}
+.avatar-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;}
+.avatar-placeholder .av-icon{font-size:2.5rem;opacity:.4;}
+.avatar-placeholder .av-text{font-family:var(--mono);font-size:0.55rem;color:var(--dim);letter-spacing:2px;text-align:center;line-height:1.6;}
+.avatar-upload-wrap input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.avatar-remove{position:absolute;top:6px;right:6px;background:#0a0a0ccc;border:1px solid var(--red);
+  color:var(--red);font-family:var(--mono);font-size:0.6rem;padding:2px 6px;cursor:pointer;
+  display:none;z-index:3;transition:background .2s;}
+.avatar-remove:hover{background:var(--red);color:#fff;}
+.avatar-upload-wrap:hover .avatar-remove{display:block;}
+.avatar-scan{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,#e8002a22);
+  height:30%;pointer-events:none;}
+
+/* ─── SKILL TOOLTIP ─── */
+.skill-info{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;
+  background:transparent;border:1px solid var(--dim);color:var(--dim);font-size:0.55rem;cursor:help;
+  flex-shrink:0;position:relative;font-family:var(--mono);line-height:1;user-select:none;}
+.skill-info:hover{border-color:var(--yel);color:var(--yel);}
+.skill-info .tip{
+  display:none;position:absolute;left:20px;top:50%;transform:translateY(-50%);
+  background:#0e0e12;border:1px solid var(--yel);border-left:2px solid var(--yel);
+  color:var(--text);font-family:var(--mono);font-size:0.65rem;padding:8px 12px;
+  width:220px;z-index:999;line-height:1.5;pointer-events:none;
+  box-shadow:0 4px 20px #00000088;}
+.skill-info .tip .tip-name{display:block;color:var(--yel);font-size:0.7rem;margin-bottom:4px;letter-spacing:1px;}
+.skill-info:hover .tip{display:block;}
+/* flip tooltip when too far right */
+.skill-info.tip-left .tip{left:auto;right:20px;}
+
+/* ─── ARMOR ARROWS ─── */
+.armor-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.armor-row label{flex:1;margin:0;}
+.armor-val{font-family:var(--disp);font-size:1.3rem;color:var(--blu);font-weight:700;min-width:28px;text-align:center;text-shadow:0 0 10px #00d4ff66;}
+.armor-btns{display:flex;flex-direction:column;gap:2px;}
+.armor-btns button{width:22px;height:16px;background:transparent;border:1px solid var(--border);color:var(--dim);
+  font-size:0.55rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);padding:0;line-height:1;}
+.armor-btns button:hover{border-color:var(--yel);color:var(--yel);}
+.armor-sp-max{font-family:var(--mono);font-size:0.6rem;color:var(--dim);}
+
+/* ─── STAT POINTS COUNTER ─── */
+.stat-pts-bar{display:flex;align-items:center;justify-content:space-between;
+  background:#07080f;border:1px solid #0a1828;border-left:2px solid var(--blu);
+  padding:8px 12px;margin-bottom:12px;}
+.stat-pts-bar .pts-label{font-family:var(--mono);font-size:0.65rem;color:var(--dim);letter-spacing:1px;}
+.stat-pts-bar .pts-val{font-family:var(--disp);font-size:1.1rem;font-weight:700;}
+.stat-pts-bar .pts-val.ok{color:#00cc66;}
+.stat-pts-bar .pts-val.warn{color:var(--yel);}
+.stat-pts-bar .pts-val.over{color:var(--red);}
+.pts-pips{display:flex;gap:3px;flex-wrap:wrap;margin-top:6px;}
+.pts-pip{width:10px;height:10px;border:1px solid var(--border);}
+.pts-pip.used{background:var(--blu);border-color:var(--blu);box-shadow:0 0 3px var(--blu);}
+.pts-pip.over{background:var(--red);border-color:var(--red);}
+
+/* ─── CYBERWARE CP2077 STYLE ─── */
+.cw-wrap{position:relative;width:100%;min-height:480px;background:#060a10;
+  border:1px solid #1a0a0a;overflow:hidden;display:grid;
+  grid-template-columns:1fr 240px 1fr;align-items:center;gap:0;padding:16px 0;}
+.cw-wrap::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 50% 70% at 50% 45%,#00d4ff06 0%,transparent 70%);pointer-events:none;}
+.cw-wrap::after{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,#00000018 3px,#00000018 4px);
+  pointer-events:none;z-index:0;}
+.cw-body-col{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;}
+.cw-body-svg{width:200px;height:auto;filter:drop-shadow(0 0 18px #e8002a55);}
+.cw-zone{fill:transparent;stroke:transparent;cursor:pointer;transition:all .25s;}
+.cw-zone:hover{fill:#e8002a18;stroke:#e8002a88;stroke-width:1.5;}
+.cw-zone.cw-active{fill:#00d4ff12;stroke:var(--blu);stroke-width:2;}
+.cw-zone.cw-has{fill:#00ffcc08;stroke:#00ffcc55;stroke-width:1;}
+.cw-zone.cw-has.cw-active{fill:#00d4ff12;stroke:var(--blu);stroke-width:2;}
+.cw-left{z-index:1;display:flex;flex-direction:column;gap:6px;padding:0 10px;}
+.cw-right{z-index:1;display:flex;flex-direction:column;gap:6px;padding:0 10px;}
+.cw-sys{position:relative;cursor:pointer;transition:all .2s;}
+.cw-sys-inner{background:#07080f;border:1px solid #0a1828;padding:8px 10px;
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+  transition:all .2s;}
+.cw-sys:hover .cw-sys-inner,.cw-sys.cw-sys-active .cw-sys-inner{border-color:var(--blu);background:#07101a;}
+.cw-sys.cw-sys-has .cw-sys-inner{border-color:#00d4ff44;background:#060e18;}
+.cw-sys.cw-sys-has.cw-sys-active .cw-sys-inner{border-color:var(--cyan);background:#07101a;}
+.cw-sys-name{font-family:var(--disp);font-size:0.5rem;color:var(--dim);letter-spacing:2px;line-height:1.4;}
+.cw-sys:hover .cw-sys-name,.cw-sys.cw-sys-active .cw-sys-name{color:var(--blu);}
+.cw-sys.cw-sys-has .cw-sys-name{color:var(--blu2);}
+.cw-sys.cw-sys-has.cw-sys-active .cw-sys-name{color:var(--cyan);}
+.cw-sys-badge{font-family:var(--disp);font-size:0.65rem;font-weight:700;color:var(--dim);
+  min-width:20px;text-align:center;}
+.cw-sys:hover .cw-sys-badge,.cw-sys.cw-sys-active .cw-sys-badge{color:var(--blu);}
+.cw-sys.cw-sys-has .cw-sys-badge{color:var(--blu);}
+.cw-connector{position:absolute;top:50%;right:-10px;width:10px;height:1px;background:#1a0a1a;}
+.cw-right .cw-connector{left:-10px;right:auto;}
+.cw-sys:hover .cw-connector,.cw-sys.cw-sys-active .cw-connector{background:var(--blu);}
+.cw-sys.cw-sys-has .cw-connector{background:#00aaff33;}
+/* slide-in detail panel */
+.cw-detail{position:fixed;top:0;right:-440px;width:400px;height:100vh;background:#060a12;
+  border-left:2px solid var(--red);z-index:1000;transition:right .28s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;display:flex;flex-direction:column;}
+.cw-detail.open{right:0;}
+.cw-detail-header{background:#07080f;border-bottom:1px solid #0a1828;padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;flex-shrink:0;}
+.cw-detail-title{font-family:var(--disp);font-size:0.7rem;color:var(--blu);letter-spacing:3px;text-shadow:0 0 10px #00d4ff66;}
+.cw-detail-sub{font-family:var(--mono);font-size:0.58rem;color:var(--dim);margin-top:3px;letter-spacing:1px;}
+.cw-detail-close{background:transparent;border:1px solid var(--red);color:var(--red);
+  font-family:var(--mono);font-size:0.65rem;padding:4px 10px;cursor:pointer;flex-shrink:0;}
+.cw-detail-close:hover{background:var(--red);color:#000;}
+.cw-detail-body{padding:18px;flex:1;}
+.cw-slot-row{display:grid;grid-template-columns:1fr 58px 28px;gap:8px;align-items:center;margin-bottom:8px;}
+.cw-slot-row input{font-size:0.78rem;}
+.cw-slot-num{font-family:var(--disp);font-size:0.85rem;color:var(--yel);text-align:center;}
+.cw-add-btn{width:100%;background:transparent;border:1px dashed #2a1a1a;color:var(--dim);
+  font-family:var(--mono);font-size:0.62rem;padding:8px;cursor:pointer;letter-spacing:2px;transition:all .2s;margin-top:6px;}
+.cw-add-btn:hover{border-color:var(--red);color:var(--red);}
+.cw-slot-empty{font-family:var(--mono);font-size:0.62rem;color:var(--dim);padding:18px 0;text-align:center;letter-spacing:2px;}
+.cw-detail-footer{background:#07080f;border-top:1px solid #0a1828;padding:12px 18px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.cw-footer-label{font-family:var(--mono);font-size:0.58rem;color:var(--dim);letter-spacing:2px;}
+.cw-footer-num{font-family:var(--disp);font-size:1.1rem;color:var(--cyan);font-weight:700;text-shadow:0 0 8px var(--cyan);}
+.cw-overlay{position:fixed;inset:0;background:#00000077;z-index:999;display:none;backdrop-filter:blur(2px);}
+.cw-overlay.open{display:block;}
+.cw-hum-total-bar{margin-top:12px;background:#07080f;border:1px solid #0a1828;
+  border-left:2px solid var(--red);padding:8px 14px;display:flex;justify-content:space-between;align-items:center;}
+.cw-hum-total-bar .lbl{font-family:var(--mono);font-size:0.6rem;color:var(--dim);letter-spacing:2px;}
+.cw-hum-total-bar .val{font-family:var(--disp);font-size:1rem;color:var(--red);font-weight:700;text-shadow:0 0 8px var(--red);}
+
+/* ─── DICE ROLLER ─── */
+.dice-roller{background:#07080f;border:1px solid #0a1828;border-top:2px solid var(--yel);padding:16px;}
+.dice-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+.die-btn{width:52px;height:52px;background:#060a10;border:1px solid #0a1828;
+  color:var(--dim);font-family:var(--disp);font-size:0.6rem;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  transition:all .2s;letter-spacing:1px;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));}
+.die-btn:hover{border-color:var(--yel);color:var(--yel);background:#f5c51810;box-shadow:0 0 12px #f5c51833;}
+.die-btn.rolling{border-color:var(--red);color:var(--red);animation:dieSpin .35s ease;}
+.die-btn .die-ico{font-size:1.2rem;}
+@keyframes dieSpin{0%{transform:rotate(0)scale(1)}40%{transform:rotate(200deg)scale(1.15)}100%{transform:rotate(360deg)scale(1)}}
+.dice-formula-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+.dice-formula-row input{width:80px;text-align:center;}
+.dice-roll-btn{background:var(--red);border:none;color:#fff;font-family:var(--disp);font-size:0.62rem;
+  padding:8px 16px;cursor:pointer;letter-spacing:2px;transition:filter .2s;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));}
+.dice-roll-btn:hover{filter:brightness(1.3);}
+.dice-result-area{min-height:64px;background:#060a10;border:1px solid #0a1828;
+  border-left:2px solid var(--yel);padding:12px 16px;}
+.dice-total{font-family:var(--disp);font-size:2.2rem;color:var(--yel);font-weight:900;line-height:1;}
+.dice-detail{font-family:var(--mono);font-size:0.62rem;color:var(--dim);margin-top:5px;word-break:break-all;}
+.dice-tag{font-size:0.65rem;font-family:var(--mono);margin-top:5px;letter-spacing:2px;}
+.dice-tag.crit{color:#00cc66;}
+.dice-tag.fumble{color:var(--red);}
+.dice-history{margin-top:8px;max-height:80px;overflow-y:auto;border-top:1px solid var(--border);padding-top:6px;}
+.dice-hist-entry{font-family:var(--mono);font-size:0.58rem;color:var(--dim);padding:2px 0;
+  display:flex;justify-content:space-between;border-bottom:1px solid #0e0808;}
+.dice-hist-entry .hval{color:var(--text);}
+.dice-mod-row{display:flex;gap:8px;align-items:center;}
+.dice-mod-row label{white-space:nowrap;}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;background:#070a12;border:1px solid var(--blu);
+  color:var(--blu);font-family:var(--mono);font-size:0.75rem;padding:10px 18px;letter-spacing:1px;
+  opacity:0;pointer-events:none;transition:opacity .3s;z-index:999;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+  box-shadow:0 0 20px #00d4ff22;}
+#toast.on{opacity:1;}
+
+@media(max-width:700px){
+  .g2,.g3{grid-template-columns:1fr;}
+  .g5,.hst{grid-template-columns:repeat(3,1fr);}
+  .ar,.cr{grid-template-columns:1fr 1fr;}
+  .hsk{grid-template-columns:1fr;}
+  .hwr{grid-template-columns:1fr 60px;}
+}
+
+/* ─── PRESET MODAL (Armas & Cyberware) ─── */
+.preset-overlay{position:fixed;inset:0;background:#000000cc;z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.preset-overlay.open{display:flex;}
+.preset-modal{background:#060a12;border:1px solid #0a1828;border-top:2px solid var(--blu);
+  width:min(860px,96vw);max-height:88vh;display:flex;flex-direction:column;position:relative;}
+.preset-modal.cyber-modal{border-top-color:var(--cyan);}
+.preset-modal-header{background:#07080f;border-bottom:1px solid #0a1828;padding:14px 20px;
+  display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.preset-modal-title{font-family:var(--disp);font-size:0.75rem;color:var(--blu);letter-spacing:4px;flex:1;text-shadow:0 0 10px #00d4ff66;}
+.preset-modal.cyber-modal .preset-modal-title{color:var(--cyan);text-shadow:0 0 10px #00ffcc66;}
+.preset-modal-close{background:transparent;border:1px solid var(--dim);color:var(--dim);
+  font-family:var(--mono);font-size:0.65rem;padding:4px 10px;cursor:pointer;transition:all .2s;}
+.preset-modal-close:hover{border-color:var(--red);color:var(--red);}
+.preset-search{background:#060a10;border:1px solid #0a1828;border-bottom:1px solid var(--blu);
+  color:var(--text);font-family:var(--mono);font-size:0.8rem;padding:6px 12px;outline:none;width:220px;}
+.preset-modal.cyber-modal .preset-search{border-bottom-color:var(--cyan);}
+.preset-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;}
+.preset-tab{font-family:var(--mono);font-size:0.6rem;letter-spacing:2px;padding:10px 16px;cursor:pointer;
+  background:transparent;border:none;color:var(--dim);border-bottom:2px solid transparent;
+  margin-bottom:-1px;white-space:nowrap;transition:all .2s;}
+.preset-tab:hover{color:var(--text);}
+.preset-tab.on{color:var(--blu);border-bottom-color:var(--blu);text-shadow:0 0 8px #00d4ff88;}
+.preset-modal.cyber-modal .preset-tab.on{color:var(--cyan);border-bottom-color:var(--cyan);}
+.preset-body{overflow-y:auto;flex:1;padding:16px;}
+.preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.preset-card{background:#07080f;border:1px solid #0a1828;border-left:2px solid var(--blu);
+  padding:12px 14px;cursor:pointer;transition:all .2s;position:relative;}
+.preset-modal.cyber-modal .preset-card{border-left-color:var(--cyan);}
+.preset-card:hover{border-color:var(--blu);background:#070c16;box-shadow:0 0 14px #00d4ff22;}
+.preset-modal.cyber-modal .preset-card:hover{border-color:var(--cyan);background:#07120f;box-shadow:0 0 14px #00ffcc22;}
+.preset-card-name{font-family:var(--disp);font-size:0.7rem;color:var(--text);letter-spacing:1px;margin-bottom:6px;}
+.preset-card-stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+.preset-stat{font-family:var(--mono);font-size:0.6rem;padding:2px 6px;border:1px solid var(--border);}
+.preset-stat.dmg{color:var(--red);border-color:#e8002a44;}
+.preset-stat.rof{color:var(--yel);border-color:#f5c51844;}
+.preset-stat.rng{color:var(--blu);border-color:#00aaff44;}
+.preset-stat.hum{color:var(--red);border-color:#e8002a44;}
+.preset-stat.loc{color:var(--yel);border-color:#f5c51844;}
+.preset-stat.cost{color:#00cc66;border-color:#00cc6644;}
+.preset-card-desc{font-family:var(--mono);font-size:0.58rem;color:var(--dim);line-height:1.5;}
+.preset-card-type{position:absolute;top:8px;right:10px;font-family:var(--mono);font-size:0.5rem;
+  color:var(--dim);letter-spacing:1px;text-transform:uppercase;}
+.preset-add-btn{margin-top:8px;width:100%;background:var(--blu3);border:1px solid var(--blu);color:var(--blu);
+  font-family:var(--disp);font-size:0.58rem;padding:5px;cursor:pointer;letter-spacing:2px;transition:filter .2s;}
+.preset-add-btn:hover{filter:brightness(1.3);}
+.preset-modal.cyber-modal .preset-add-btn{background:#003030;border-color:var(--cyan);color:var(--cyan);}
+.preset-empty{font-family:var(--mono);font-size:0.7rem;color:var(--dim);text-align:center;padding:40px;letter-spacing:2px;}
+
+/* ─── QUICK-ADJUST STEPPER ─── */
+.qa-wrap{display:flex;align-items:center;gap:0;width:100%;}
+.qa-btn{width:28px;height:32px;background:#07080f;border:1px solid #0a1828;color:var(--dim);
+  font-family:var(--mono);font-size:0.9rem;cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none;}
+.qa-btn:hover{color:var(--cyan);border-color:var(--cyan);background:#003030;box-shadow:0 0 6px #00ffcc44;}
+.qa-btn.minus:hover{color:var(--red);border-color:var(--red);background:#1a0008;}
+.qa-wrap input{flex:1;border-left:none;border-right:none;text-align:center;}
+.qa-big .qa-btn{width:34px;height:40px;font-size:1.1rem;}
+.qa-big input{font-size:1.2rem;color:var(--blu);text-align:center;}
+
+/* ─── MULTIPLAYER BAR ─── */
+.mp-bar{background:#07070d;border-bottom:2px solid var(--cyan);padding:6px 16px;
+  display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:0.62rem;}
+.mp-bar.offline{border-bottom-color:var(--dim);display:none;}
+.mp-session{color:var(--yel);letter-spacing:3px;}
+.mp-status{color:var(--cyan);}
+.mp-status.sync{animation:syncpulse .6s ease;}
+@keyframes syncpulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
+.mp-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);display:inline-block;margin-right:4px;}
+.mp-dot.off{background:var(--dim);box-shadow:none;}
+.mp-playername{color:var(--dim);}
+.mp-viewer{background:#0a0f0a;border:1px solid var(--cyan);color:var(--cyan);
+  font-family:var(--mono);font-size:0.65rem;padding:3px 10px;letter-spacing:2px;}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <span class="cy">CYBER</span>
+    <span class="pu">PUNK</span>
+    <span class="re">R E D</span>
+  </div>
+  <div class="hbtns">
+    <button class="hb b1" onclick="saveSheet()">💾 SALVAR</button>
+    <button class="hb b2" onclick="document.getElementById('fi').click()">📂 CARREGAR</button>
+    <button class="hb b3" onclick="clearSheet()">✕ LIMPAR</button>
+    <button class="hb b4" onclick="window.print()">⎙ IMPRIMIR</button>
+  </div>
+</header>
+
+<!-- MULTIPLAYER BAR -->
+<div class="mp-bar offline" id="mp-bar">
+  <span class="mp-dot" id="mp-dot"></span>
+  <span class="mp-playername" id="mp-player-label"></span>
+  <span style="color:var(--dim)">·</span>
+  <span class="mp-session" id="mp-session-label"></span>
+  <span style="color:var(--dim)">·</span>
+  <span class="mp-status" id="mp-status-label">CONECTANDO...</span>
+  <div id="mp-viewer-badge" style="display:none;margin-left:auto;"><span class="mp-viewer">👁 MODO VISUALIZAÇÃO (MESTRE)</span></div>
+</div>
+
+<input type="file" id="fi" accept=".json" style="display:none" onchange="onLoad(event)">
+
+<!-- PAGE TABS -->
+<div class="ptabs">
+  <button class="ptab on"  onclick="goTab('hud',this)">▶ VISÃO GERAL</button>
+  <button class="ptab t2"  onclick="goTab('sheet',this)">✎ FICHA COMPLETA</button>
+</div>
+
+<!-- ════════════════════════════
+     ABA 1 — VISÃO GERAL
+════════════════════════════ -->
+<div id="pane-hud" class="pane on">
+
+  <div class="g2">
+    <!-- Identidade com avatar -->
+    <div class="box" style="padding:0;overflow:hidden;border-top:2px solid var(--red);">
+      <div style="display:grid;grid-template-columns:120px 1fr;min-height:160px;">
+        <!-- Avatar column -->
+        <div style="position:relative;background:#0a0a0e;border-right:1px solid var(--border);overflow:hidden;">
+          <div id="H_avatar_img" style="width:100%;height:100%;min-height:160px;display:flex;align-items:center;justify-content:center;font-size:3rem;background:#0a0a0e;">🤖</div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,#0a0a0e88);pointer-events:none;"></div>
+        </div>
+        <!-- Info column -->
+        <div style="padding:14px 16px;">
+          <div class="bt" style="margin-bottom:10px;">Identidade</div>
+          <div class="hname" id="H_nome">— SEM NOME —</div>
+          <div class="hrole" id="H_role">ROLE NÃO DEFINIDO · LVL —</div>
+          <div class="htags" style="margin-top:8px;">
+            <span class="htag" id="H_cultura">ORIGEM: —</span>
+            <span class="htag" id="H_afil">AFIL: —</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saúde — EDITÁVEL no HUD -->
+    <div class="box r">
+      <div class="bt">Saúde &amp; Status</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div>
+          <div style="font-family:var(--mono);font-size:0.6rem;color:var(--dim);margin-bottom:4px;">HP ATUAL / MÁXIMO</div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div class="qa-wrap"><button class="qa-btn minus" onclick="qa('H_hpcur',-1,0,999);document.getElementById('hp-cur').value=document.getElementById('H_hpcur').value;sync()">−</button><input type="number" id="H_hpcur" min="0" max="999" value="40" style="font-size:1.1rem;color:var(--red);"><button class="qa-btn" onclick="qa('H_hpcur',+1,0,999);document.getElementById('hp-cur').value=document.getElementById('H_hpcur').value;sync()">+</button></div>
+            <span class="hslash">/</span>
+            <div class="qa-wrap"><button class="qa-btn minus" onclick="qa('H_hpmax',-1,0,999);document.getElementById('hp-max').value=document.getElementById('H_hpmax').value;sync()">−</button><input type="number" id="H_hpmax" min="0" max="999" value="40" style="font-size:1.1rem;"><button class="qa-btn" onclick="qa('H_hpmax',+1,0,999);document.getElementById('hp-max').value=document.getElementById('H_hpmax').value;sync()">+</button></div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div class="badge ok" id="H_wbadge">ÍNTEGRO</div>
+          <div style="font-family:var(--mono);font-size:0.6rem;color:var(--dim);margin-top:4px;" id="H_pen">Penalidade: Nenhuma</div>
+        </div>
+      </div>
+      <div class="hbar"><div class="hfill ok" id="H_hpbar" style="width:100%"></div></div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;" id="H_wboxes"></div>
+    </div>
+  </div>
+
+  <div class="g2 gap">
+    <!-- Atributos -->
+    <div class="box">
+      <div class="bt">Atributos</div>
+      <div class="hst" id="H_stats"></div>
+    </div>
+
+    <!-- Humanidade — EDITÁVEL no HUD -->
+    <div class="box y">
+      <div class="bt">Humanidade</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div>
+          <div style="font-family:var(--mono);font-size:0.6rem;color:var(--dim);margin-bottom:4px;">HUM ATUAL / MÁXIMO</div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div class="qa-wrap"><button class="qa-btn minus" onclick="qa('H_humcur',-1,0,100);document.getElementById('hum-cur').value=document.getElementById('H_humcur').value;sync()">−</button><input type="number" id="H_humcur" min="0" max="100" value="50" style="font-size:1rem;color:var(--yel);"><button class="qa-btn" onclick="qa('H_humcur',+1,0,100);document.getElementById('hum-cur').value=document.getElementById('H_humcur').value;sync()">+</button></div>
+            <span class="hslash">/</span>
+            <div class="qa-wrap"><button class="qa-btn minus" onclick="qa('H_hummax',-1,0,100);document.getElementById('hum-max').value=document.getElementById('H_hummax').value;sync()">−</button><input type="number" id="H_hummax" min="0" max="100" value="50" style="font-size:1rem;"><button class="qa-btn" onclick="qa('H_hummax',+1,0,100);document.getElementById('hum-max').value=document.getElementById('H_hummax').value;sync()">+</button></div>
+          </div>
+        </div>
+        <div class="badge ok" id="H_cybadge">ESTÁVEL</div>
+      </div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;" id="H_hpips"></div>
+      <div style="margin-top:14px;">
+        <div class="bt" style="margin-bottom:8px;">Cyberware</div>
+        <div id="H_cyber"><div class="empty">NENHUM IMPLANTE</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2 gap">
+    <!-- Skills -->
+    <div class="box b">
+      <div class="bt">Perícias em Destaque</div>
+      <div style="font-family:var(--mono);font-size:0.6rem;color:var(--dim);margin-bottom:10px;">● Perícias com valor ≥ 1</div>
+      <div class="hsk" id="H_skills"><div class="empty" style="grid-column:1/-1">NENHUMA PERÍCIA DEFINIDA</div></div>
+    </div>
+    <!-- Arsenal -->
+    <div class="box r">
+      <div class="bt">Arsenal</div>
+      <div id="H_weapons"><div class="empty">NENHUMA ARMA</div></div>
+    </div>
+  </div>
+
+  <!-- Inventário resumido -->
+  <div class="box gap y">
+    <div class="bt">Inventário Resumido</div>
+    <div class="g3">
+      <div>
+        <div style="font-family:var(--mono);font-size:0.6rem;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">⚔ ARMAS</div>
+        <div id="H_iw"><div class="empty" style="font-size:.65rem;padding:4px 0;">—</div></div>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:0.6rem;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">🎒 EQUIPAMENTO</div>
+        <div id="H_ig"><div class="empty" style="font-size:.65rem;padding:4px 0;">—</div></div>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:0.6rem;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">💊 DROGAS</div>
+        <div id="H_id"><div class="empty" style="font-size:.65rem;padding:4px 0;">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Role + Recursos — RECURSOS EDITÁVEIS -->
+  <div class="g2 gap">
+    <div class="box">
+      <div class="bt">Habilidade do Role</div>
+      <div style="font-family:var(--mono);font-size:0.9rem;color:var(--red);" id="H_abn">—</div>
+      <div style="font-family:var(--disp);font-size:1.2rem;color:var(--yel);margin:4px 0;" id="H_abl">Nível —</div>
+      <div style="font-family:var(--mono);font-size:0.75rem;color:var(--dim);line-height:1.6;" id="H_abd">—</div>
+    </div>
+    <div class="box y">
+      <div class="bt">Recursos</div>
+      <div class="g2" style="gap:10px;">
+        <div>
+          <label>EB NA MÃO</label>
+          <div class="qa-wrap"><button class="qa-btn minus" onclick="qa('H_ebm',-100,0,999999)">−</button><input type="number" id="H_ebm" data-h="ebm" min="0" value="500" style="color:var(--yel);font-size:0.9rem;"><button class="qa-btn" onclick="qa('H_ebm',+100,0,999999)">+</button></div>
+        </div>
+        <div>
+          <label>EB BANCO</label>
+          <div class="qa-wrap"><button class="qa-btn minus" onclick="qa('H_ebb',-100,0,999999)">−</button><input type="number" id="H_ebb" data-h="ebb" min="0" value="0" style="font-size:0.9rem;"><button class="qa-btn" onclick="qa('H_ebb',+100,0,999999)">+</button></div>
+        </div>
+        <div>
+          <label>IP</label>
+          <div class="qa-wrap"><button class="qa-btn minus" onclick="qa('H_ip',-1,0,99999)">−</button><input type="number" id="H_ip" data-h="ip" min="0" value="0" style="color:var(--blu);font-size:0.9rem;"><button class="qa-btn" onclick="qa('H_ip',+1,0,99999)">+</button></div>
+        </div>
+        <div>
+          <label>DÍVIDAS</label>
+          <input type="text" id="H_div" data-h="div" placeholder="—" style="font-size:0.8rem;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROLADOR DE DADOS -->
+  <div class="dice-roller gap">
+    <div class="bt" style="color:var(--yel);">&#127922; Rolador de Dados</div>
+    <div class="dice-row">
+      <button class="die-btn" onclick="quickRoll(4,this)"><span class="die-ico">&#11042;</span>D4</button>
+      <button class="die-btn" onclick="quickRoll(6,this)"><span class="die-ico">&#11042;</span>D6</button>
+      <button class="die-btn" onclick="quickRoll(8,this)"><span class="die-ico">&#11042;</span>D8</button>
+      <button class="die-btn" onclick="quickRoll(10,this)"><span class="die-ico">&#11042;</span>D10</button>
+      <button class="die-btn" onclick="quickRoll(12,this)"><span class="die-ico">&#11042;</span>D12</button>
+      <button class="die-btn" onclick="quickRoll(20,this)"><span class="die-ico">&#11042;</span>D20</button>
+      <button class="die-btn" onclick="quickRoll(100,this)"><span class="die-ico">&#11042;</span>D%</button>
+    </div>
+    <div class="dice-formula-row">
+      <input type="number" id="dice-qty" min="1" max="20" value="1" style="width:54px;">
+      <label style="margin:0;font-family:var(--disp);font-size:0.65rem;color:var(--dim);">D</label>
+      <input type="number" id="dice-sides" min="2" max="100" value="10" style="width:60px;">
+      <div class="dice-mod-row">
+        <label style="margin:0;">+</label>
+        <input type="number" id="dice-mod" value="0" style="width:54px;">
+      </div>
+      <button class="dice-roll-btn" onclick="rollDice()">&#9654; ROLAR</button>
+    </div>
+    <div class="dice-result-area">
+      <div class="dice-total" id="dice-total">&mdash;</div>
+      <div class="dice-detail" id="dice-detail">Clique num dado ou use a formula acima</div>
+      <div id="dice-tag"></div>
+    </div>
+    <div class="dice-history" id="dice-history"></div>
+  </div>
+
+</div><!-- /pane-hud -->
+
+<!-- ════════════════════════════
+     ABA 2 — FICHA COMPLETA
+════════════════════════════ -->
+<div id="pane-sheet" class="pane">
+
+  <!-- IDENTIDADE -->
+  <div class="box">
+    <div class="bt">Identidade</div>
+    <div style="display:grid;grid-template-columns:140px 1fr;gap:20px;align-items:start;">
+      <!-- Avatar -->
+      <div>
+        <label style="margin-bottom:6px;">FOTO / AVATAR</label>
+        <div class="avatar-upload-wrap" id="avatar-wrap" onclick="document.getElementById('avatar-file').click()">
+          <img id="avatar-img" src="" alt="avatar">
+          <div class="avatar-placeholder" id="avatar-ph">
+            <span class="av-icon">📷</span>
+            <span class="av-text">CLIQUE PARA<br>CARREGAR IMAGEM</span>
+          </div>
+          <input type="file" id="avatar-file" accept="image/*" style="display:none" onchange="loadAvatar(event)">
+          <button class="avatar-remove" id="avatar-remove" onclick="removeAvatar(event)">✕ REMOVER</button>
+          <div class="avatar-scan"></div>
+        </div>
+      </div>
+      <!-- Fields -->
+      <div class="g2" style="gap:12px;">
+        <div class="f"><label>Nome / Handle</label><input type="text" data-h="nome" placeholder="Ex: V, Johnny Silverhand..."></div>
+        <div class="f"><label>Role (Função)</label>
+          <select data-h="role" onchange="onRoleChange()">
+            <option value="">Selecionar...</option>
+            <option>Rockerboy</option><option>Solo</option><option>Netrunner</option>
+            <option>Tech</option><option>Medtech</option><option>Media</option>
+            <option>Exec</option><option>Lawman</option><option>Fixer</option><option>Nomad</option>
+          </select>
+        </div>
+        <div class="f"><label>Nível do Role</label><input type="number" data-h="rolelv" min="1" max="10" placeholder="1-10"></div>
+        <div class="f"><label>Cultura / Origem</label><input type="text" data-h="cultura" placeholder="Ex: Night City Native"></div>
+        <div class="f"><label>Estilo / Look</label><input type="text" placeholder="Ex: Streetwear..."></div>
+        <div class="f"><label>Afiliação</label><input type="text" data-h="afil" placeholder="Ex: Aldecaldos, Arasaka..."></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATRIBUTOS com setas -->
+  <div class="box gap">
+    <div class="bt">Atributos Base</div>
+    <div class="stat-pts-bar" id="stat-pts-bar">
+      <div>
+        <div class="pts-label">PONTOS DISTRIBUÍDOS</div>
+        <div class="pts-pips" id="stat-pts-pips"></div>
+      </div>
+      <div style="text-align:right;">
+        <div class="pts-label" style="margin-bottom:2px;">TOTAL / MÁXIMO</div>
+        <span class="pts-val ok" id="stat-pts-used">50</span>
+        <span style="color:var(--dim);font-family:var(--mono);font-size:0.8rem;"> / </span>
+        <span style="font-family:var(--disp);font-size:1.1rem;color:var(--dim);" id="stat-pts-max">62</span>
+      </div>
+    </div>
+    <div class="g5" id="stat-grid"></div>
+  </div>
+
+  <!-- SAÚDE / ARMADURA / HUMANIDADE -->
+  <div class="g3 gap">
+    <div class="box">
+      <div class="bt">Saúde</div>
+      <div class="wrow">
+        <label>HP ATUAL</label>
+        <div class="ww">
+          <div class="qa-wrap qa-big"><button class="qa-btn minus" onclick="qa('hp-cur',-1,0,999)">−</button><input type="number" id="hp-cur" data-h="hpcur" min="0" max="999" value="40"><button class="qa-btn" onclick="qa('hp-cur',+1,0,999)">+</button></div>
+          <span class="sl">/</span>
+          <div class="qa-wrap qa-big"><button class="qa-btn minus" onclick="qa('hp-max',-1,0,999)">−</button><input type="number" id="hp-max" data-h="hpmax" min="0" max="999" value="40"><button class="qa-btn" onclick="qa('hp-max',+1,0,999)">+</button></div>
+        </div>
+      </div>
+      <label>Estado de Ferimento</label>
+      <div class="wboxes" id="wound-track"></div>
+      <div style="margin-top:10px;"><label>Penalidade</label><input type="text" id="wound-pen" readonly value="Nenhuma" style="color:var(--yel);"></div>
+    </div>
+    <div class="box">
+      <div class="bt">Armadura</div>
+      <div class="armor-row">
+        <div style="flex:1">
+          <label style="margin-bottom:4px;">CABEÇA (SP)</label>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div class="armor-btns">
+              <button onclick="adjArmor('head',+1)">▲</button>
+              <button onclick="adjArmor('head',-1)">▼</button>
+            </div>
+            <span class="armor-val" id="av-head">0</span>
+            <input type="hidden" id="ar-head" data-h="ar_head" value="0">
+            <span class="armor-sp-max">/ 20</span>
+          </div>
+        </div>
+      </div>
+      <div class="armor-row">
+        <div style="flex:1">
+          <label style="margin-bottom:4px;">CORPO (SP)</label>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div class="armor-btns">
+              <button onclick="adjArmor('body',+1)">▲</button>
+              <button onclick="adjArmor('body',-1)">▼</button>
+            </div>
+            <span class="armor-val" id="av-body">0</span>
+            <input type="hidden" id="ar-body" data-h="ar_body" value="0">
+            <span class="armor-sp-max">/ 20</span>
+          </div>
+        </div>
+      </div>
+      <div class="armor-row">
+        <div style="flex:1">
+          <label style="margin-bottom:4px;">ESCUDO (SP)</label>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div class="armor-btns">
+              <button onclick="adjArmor('shield',+1)">▲</button>
+              <button onclick="adjArmor('shield',-1)">▼</button>
+            </div>
+            <span class="armor-val" id="av-shield">0</span>
+            <input type="hidden" id="ar-shield" data-h="ar_shield" value="0">
+            <span class="armor-sp-max">/ 20</span>
+          </div>
+        </div>
+      </div>
+      <div class="f" style="margin-top:4px;"><label>Tipo de Armadura</label><input type="text" data-h="ar_tipo" placeholder="Ex: Kevlar, Flak..."></div>
+    </div>
+    <div class="box y">
+      <div class="bt">Humanidade</div>
+      <div class="wrow">
+        <label>HUM ATUAL</label>
+        <div class="ww">
+          <div class="qa-wrap qa-big"><button class="qa-btn minus" onclick="qa('hum-cur',-1,0,100)">−</button><input type="number" id="hum-cur" data-h="humcur" min="0" max="100" value="50"><button class="qa-btn" onclick="qa('hum-cur',+1,0,100)">+</button></div>
+          <span class="sl">/</span>
+          <div class="qa-wrap qa-big"><button class="qa-btn minus" onclick="qa('hum-max',-1,0,100)">−</button><input type="number" id="hum-max" data-h="hummax" min="0" max="100" value="50"><button class="qa-btn" onclick="qa('hum-max',+1,0,100)">+</button></div>
+        </div>
+      </div>
+      <div class="hpips" id="hum-track"></div>
+      <div style="margin-top:10px;"><label>Cyberpsicose</label><input type="text" id="cyberpsy" readonly value="Estável"></div>
+    </div>
+  </div>
+
+  <!-- PERÍCIAS -->
+  <div class="g2 gap">
+    <div class="box"><div class="bt">Combate &amp; Físico</div><div id="sk-combat"></div></div>
+    <div class="box"><div class="bt">Tech &amp; Intelecto</div><div id="sk-tech"></div></div>
+    <div class="box"><div class="bt">Social &amp; Cool</div><div id="sk-social"></div></div>
+    <div class="box"><div class="bt">Percepção &amp; Mundo</div><div id="sk-world"></div></div>
+  </div>
+
+  <!-- ARSENAL -->
+  <div class="box gap r">
+    <div class="bt">Arsenal</div>
+    <div style="display:grid;grid-template-columns:1fr 80px 60px 80px 28px;gap:8px;margin-bottom:6px;">
+      <label>NOME</label><label>DANO</label><label>ROF</label><label>CONC/ALCANCE</label><label></label>
+    </div>
+    <div id="arsenal"></div>
+    <div style="display:flex;gap:8px;"><button class="addbtn" onclick="openWeaponModal()" style="border-color:var(--yel);color:var(--yel);">&#9998; ESCOLHER DO CATÁLOGO</button><button class="addbtn" onclick="addWeapon()">+ PERSONALIZADA</button></div>
+  </div>
+
+  <!-- CYBERWARE CP2077 -->
+  <div class="box gap y" style="padding:0;overflow:hidden;">
+    <div style="padding:14px 16px 0;"><div class="bt">Cyberware</div></div>
+    <div class="cw-wrap" id="cw-wrap">
+      <!-- LEFT systems -->
+      <div class="cw-left" id="cw-left"></div>
+      <!-- Centre body -->
+      <div class="cw-body-col">
+        <svg class="cw-body-svg" viewBox="0 0 200 460" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#cc2233" stop-opacity="0.7"/>
+              <stop offset="40%" stop-color="#aa1122" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#660011" stop-opacity="0.3"/>
+            </linearGradient>
+          </defs>
+          <!-- Glowing outline figure -->
+          <!-- Head -->
+          <ellipse cx="100" cy="42" rx="28" ry="32" fill="url(#bodyGrad)" stroke="#e8002a" stroke-width="1" opacity="0.8"/>
+          <!-- Neck -->
+          <rect x="91" y="72" width="18" height="16" fill="#aa1122" opacity="0.6"/>
+          <!-- Torso -->
+          <path d="M60,88 L140,88 L148,200 L52,200 Z" fill="url(#bodyGrad)" stroke="#e8002a" stroke-width="1" opacity="0.8"/>
+          <!-- Chest detail lines -->
+          <line x1="100" y1="95" x2="100" y2="190" stroke="#e8002a" stroke-width="0.5" opacity="0.4"/>
+          <line x1="70" y1="110" x2="130" y2="110" stroke="#e8002a" stroke-width="0.5" opacity="0.3"/>
+          <line x1="68" y1="135" x2="132" y2="135" stroke="#e8002a" stroke-width="0.5" opacity="0.3"/>
+          <line x1="70" y1="160" x2="130" y2="160" stroke="#e8002a" stroke-width="0.5" opacity="0.3"/>
+          <!-- Left Arm -->
+          <path d="M60,90 L40,92 L30,190 L50,192 L60,190 Z" fill="url(#bodyGrad)" stroke="#e8002a" stroke-width="1" opacity="0.75"/>
+          <!-- Right Arm -->
+          <path d="M140,90 L160,92 L170,190 L150,192 L140,190 Z" fill="url(#bodyGrad)" stroke="#e8002a" stroke-width="1" opacity="0.75"/>
+          <!-- Left Hand -->
+          <ellipse cx="38" cy="205" rx="14" ry="18" fill="#aa1122" stroke="#e8002a" stroke-width="1" opacity="0.7"/>
+          <!-- Right Hand -->
+          <ellipse cx="162" cy="205" rx="14" ry="18" fill="#aa1122" stroke="#e8002a" stroke-width="1" opacity="0.7"/>
+          <!-- Hips/Pelvis -->
+          <path d="M58,200 L142,200 L148,230 L52,230 Z" fill="url(#bodyGrad)" stroke="#e8002a" stroke-width="1" opacity="0.8"/>
+          <!-- Left Leg -->
+          <path d="M58,228 L98,228 L94,370 L54,370 Z" fill="url(#bodyGrad)" stroke="#e8002a" stroke-width="1" opacity="0.75"/>
+          <!-- Right Leg -->
+          <path d="M102,228 L142,228 L146,370 L106,370 Z" fill="url(#bodyGrad)" stroke="#e8002a" stroke-width="1" opacity="0.75"/>
+          <!-- Left Foot -->
+          <ellipse cx="72" cy="382" rx="20" ry="12" fill="#aa1122" stroke="#e8002a" stroke-width="1" opacity="0.7"/>
+          <!-- Right Foot -->
+          <ellipse cx="128" cy="382" rx="20" ry="12" fill="#aa1122" stroke="#e8002a" stroke-width="1" opacity="0.7"/>
+          <!-- Circuit detail on torso -->
+          <path d="M80,100 L80,120 L90,125 L90,145" fill="none" stroke="#e8002a" stroke-width="0.8" opacity="0.5"/>
+          <path d="M120,100 L120,120 L110,125 L110,145" fill="none" stroke="#e8002a" stroke-width="0.8" opacity="0.5"/>
+          <circle cx="100" cy="148" r="5" fill="none" stroke="#e8002a" stroke-width="1" opacity="0.6"/>
+          <!-- Neural implant indicator spine -->
+          <line x1="100" y1="90" x2="100" y2="200" stroke="#00aaff" stroke-width="0.5" opacity="0.25" stroke-dasharray="4,4"/>
+          <!-- Clickable zones (transparent overlays) -->
+          <ellipse class="cw-zone" id="cwz-head" data-zone="head" cx="100" cy="42" rx="32" ry="36"/>
+          <rect class="cw-zone" id="cwz-eyes" data-zone="eyes" x="70" y="22" width="60" height="18"/>
+          <rect class="cw-zone" id="cwz-torso" data-zone="torso" x="52" y="85" width="96" height="118"/>
+          <path class="cw-zone" id="cwz-arm_l" data-zone="arm_l" d="M25,88 L62,88 L62,210 L25,210 Z"/>
+          <path class="cw-zone" id="cwz-arm_r" data-zone="arm_r" d="M138,88 L175,88 L175,210 L138,210 Z"/>
+          <path class="cw-zone" id="cwz-hips" data-zone="hips" d="M50,198 L150,198 L150,234 L50,234 Z"/>
+          <path class="cw-zone" id="cwz-leg_l" data-zone="leg_l" d="M50,232 L100,232 L100,395 L50,395 Z"/>
+          <path class="cw-zone" id="cwz-leg_r" data-zone="leg_r" d="M100,232 L150,232 L150,395 L100,395 Z"/>
+        </svg>
+        <div style="font-family:var(--mono);font-size:0.5rem;color:var(--dim);text-align:center;margin-top:4px;letter-spacing:2px;">CLIQUE NO SISTEMA</div>
+      </div>
+      <!-- RIGHT systems -->
+      <div class="cw-right" id="cw-right"></div>
+    </div>
+    <div class="cw-hum-total-bar">
+      <span class="lbl">CUSTO TOTAL DE HUMANIDADE</span>
+      <span class="val" id="cyber-hum-total">0 pts</span>
+    </div>
+  </div>
+
+  <!-- detail slide panel -->
+  <div class="cw-overlay" id="cw-overlay" onclick="closeCyberDetail()"></div>
+  <div class="cw-detail" id="cw-detail">
+    <div class="cw-detail-header">
+      <div>
+        <div class="cw-detail-title" id="cw-det-title">SISTEMA</div>
+        <div class="cw-detail-sub" id="cw-det-sub">SLOTS: 0/0 · HUM: 0</div>
+      </div>
+      <button class="cw-detail-close" onclick="closeCyberDetail()">✕ FECHAR</button>
+    </div>
+    <div class="cw-detail-body" id="cw-det-body"></div>
+    <div class="cw-detail-footer">
+      <span class="cw-footer-label">HUM NESTE SISTEMA</span>
+      <span class="cw-footer-num" id="cw-det-hum">0</span>
+    </div>
+  </div>
+
+  <!-- INVENTÁRIO -->
+  <div class="box gap">
+    <div class="bt">Inventário</div>
+    <div class="itabs">
+      <div class="itab on" onclick="switchInv('w',this)">⚔ ARMAS</div>
+      <div class="itab"    onclick="switchInv('a',this)">🛡 ARMADURA</div>
+      <div class="itab"    onclick="switchInv('g',this)">🎒 EQUIPAMENTO</div>
+      <div class="itab"    onclick="switchInv('d',this)">💊 DROGAS</div>
+    </div>
+    <div class="ipane on" id="ip-w">
+      <div class="ih iw"><label>NOME</label><label>DANO</label><label>ROF</label><label>ALCANCE</label><label>QTD</label><label></label></div>
+      <div id="inv-w"></div>
+      <button class="addbtn" onclick="addInv('w')">+ ARMA</button>
+    </div>
+    <div class="ipane" id="ip-a">
+      <div class="ih ia"><label>NOME</label><label>SP CABEÇA</label><label>SP CORPO</label><label>PENALIDADE</label><label></label></div>
+      <div id="inv-a"></div>
+      <button class="addbtn" onclick="addInv('a')">+ ARMADURA</button>
+    </div>
+    <div class="ipane" id="ip-g">
+      <div class="ih ig"><label>ITEM</label><label>DESCRIÇÃO</label><label>QTD</label><label></label></div>
+      <div id="inv-g"></div>
+      <button class="addbtn" onclick="addInv('g')">+ ITEM</button>
+    </div>
+    <div class="ipane" id="ip-d">
+      <div class="ih id"><label>NOME</label><label>EFEITO</label><label>QTD</label><label></label></div>
+      <div id="inv-d"></div>
+      <button class="addbtn" onclick="addInv('d')">+ DROGA</button>
+    </div>
+    <div class="isum">TOTAL — <span id="inv-count">0</span> entradas</div>
+  </div>
+
+  <!-- ROLE ABILITY com seletor -->
+  <div class="g2 gap">
+    <div class="box y">
+      <div class="bt">Habilidade do Role</div>
+      <div class="f role-select-wrap">
+        <label>Selecionar Habilidade</label>
+        <select id="ability-select" onchange="onAbilityChange()">
+          <option value="">— Selecione o Role primeiro —</option>
+        </select>
+      </div>
+      <div class="role-effect-box" id="ability-effect-box">
+        <span class="eff-title" id="ability-effect-title"></span>
+        <span id="ability-effect-text">Selecione uma habilidade acima para ver a descrição.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
+        <label style="margin:0;flex:1;">Nível da Habilidade</label>
+        <div class="qa-wrap" style="width:110px;"><button class="qa-btn minus" onclick="qa('abl-inp',-1,1,10)">−</button><input id="abl-inp" type="number" data-h="abl" min="1" max="10" value="1" style="text-align:center;"><button class="qa-btn" onclick="qa('abl-inp',+1,1,10)">+</button></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="box gap" style="margin-bottom:16px;margin-top:0;border-top-color:var(--yel);">
+        <div class="bt">Eurodólares</div>
+        <div class="f"><label>Eb na Mão</label><input type="number" data-h="ebm" min="0" value="500"></div>
+        <div class="f"><label>Eb Banco</label><input type="number" data-h="ebb" min="0" value="0"></div>
+        <div class="f"><label>Dívidas</label><input type="text" data-h="div" placeholder="Ex: 500 Eb p/ Maelstrom"></div>
+      </div>
+      <div class="box">
+        <div class="bt">IP / Avanço</div>
+        <div class="f"><label>Improvement Points (IP)</label><input type="number" data-h="ip" min="0" value="0"></div>
+        <div class="f"><label>IP p/ Próximo Nível</label><input type="number" min="0" value="10"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACKGROUND -->
+  <div class="box gap">
+    <div class="bt">Background &amp; Notas</div>
+    <div class="g2">
+      <div>
+        <div class="f"><label>Motivação / Objetivo</label><textarea placeholder="O que move seu personagem?"></textarea></div>
+        <div class="f"><label>Contatos &amp; Aliados</label><textarea placeholder="Nome — Conexão — Localização"></textarea></div>
+      </div>
+      <div>
+        <div class="f"><label>Inimigos &amp; Ameaças</label><textarea placeholder="Corporações, gangs, fantasmas do passado..."></textarea></div>
+        <div class="f"><label>Notas Livres</label><textarea placeholder="Itens, missões, observações..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /pane-sheet -->
+</div><!-- /wrap -->
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════
+// ROLE ABILITIES DATA
+// ═══════════════════════════════
+const ROLE_ABILITIES = {
+  Rockerboy: [
+    { name:'Charming & Charismatic', effect:'Você pode usar COOL no lugar de PRESENCE para interações sociais. Multidões se identificam com você e o apoiam naturalmente.' },
+    { name:'Rabble Rousing', effect:'Ao se apresentar para 5+ pessoas, role Cool + Charisma. Sucesso faz a multidão seguir suas sugestões por 1d6 turnos.' },
+    { name:'Wardrobe & Style', effect:'Sua aparência impressiona qualquer um. +2 em todas as interações sociais com pessoas que se importam com moda e cultura.' },
+  ],
+  Solo: [
+    { name:'Combat Sense', effect:'Você é difícil de surpreender. Role Percepção + Combat Sense antes de qualquer ambush. Sucesso = você age normalmente no primeiro turno.' },
+    { name:'Authority', effect:'Mesmo sem documentos, você emana autoridade. Pessoas comuns tendem a obedecer suas ordens sem questionar.' },
+    { name:'Threat Assessment', effect:'Ao entrar num local, você instintivamente avalia ameaças. O GM deve te informar o nível de ameaça geral do ambiente.' },
+  ],
+  Netrunner: [
+    { name:'Interface', effect:'Você pode se conectar a redes neurais e hackear sistemas. Use INT + Interface para invasões, programação e combate no NET.' },
+    { name:'Meat Space', effect:'Sua mente processada pelo NET te dá vantagem em antecipar padrões. +1 em todas as rolagens de Percepção.' },
+    { name:'Slide', effect:'Você pode mover programas entre sistemas instâncias mais rápido que outros. Ações de transferência de dados custam metade do tempo.' },
+  ],
+  Tech: [
+    { name:'Maker', effect:'Você pode criar ou reparar qualquer dispositivo mecânico ou eletrônico. Role TECH + Maker para fabricar itens ou reparar danos.' },
+    { name:'Jury Rig', effect:'Mesmo sem as ferramentas certas, você improvisa. Pode tentar reparar qualquer coisa com o que tiver em mãos, com penalidade −2.' },
+    { name:'Field Expedient', effect:'Você pode montar armas ou dispositivos de campo a partir de componentes encontrados. Leva 10 minutos e uma rolagem de TECH.' },
+  ],
+  Medtech: [
+    { name:'Medicine', effect:'Você pode realizar cirurgias de campo e estabilizar pacientes críticos. Role TECH + Medicine para tratar ferimentos graves.' },
+    { name:'Cryotank Operation', effect:'Você pode operar tanques criogênicos para preservar pessoas à beira da morte até tratamento adequado.' },
+    { name:'Pharmaceuticals', effect:'Você conhece drogas, antídotos e estimulantes. Pode sintetizar medicamentos básicos com equipamento apropriado.' },
+  ],
+  Media: [
+    { name:'Credibility', effect:'As pessoas reconhecem seu trabalho e confiam em você. Você pode obter entrevistas e informações que outros não conseguiriam.' },
+    { name:'Streetwise', effect:'Você conhece os canais underground de informação. Role COOL + Streetwise para conseguir informações do submundo.' },
+    { name:'Composition', effect:'Você cria conteúdo persuasivo e poderoso. Seu trabalho publicado pode mudar a opinião pública sobre um assunto.' },
+  ],
+  Exec: [
+    { name:'Resources', effect:'Você tem acesso a recursos corporativos. Pode requisitar equipamentos, pessoal ou informações da sua corporação uma vez por sessão.' },
+    { name:'Teamwork', effect:'Você sabe coordenar equipes. Quando você lidera ativamente, aliados ganham +1 em rolagens coordenadas.' },
+    { name:'Procurement', effect:'Você consegue obter equipamentos e serviços raros por meio de canais corporativos com menor custo e mais facilidade.' },
+  ],
+  Lawman: [
+    { name:'Backup', effect:'Você pode chamar reforços policiais uma vez por sessão. O GM determina quanto tempo levam para chegar.' },
+    { name:'Warrant', effect:'Você tem autoridade legal para prender, revistar e confiscar. NPCs com tendência a obedecer leis respeitam sua autoridade.' },
+    { name:'Precinct Authority', effect:'Em sua jurisdição, você pode requisitar acesso a instalações, registros e suporte logístico policial.' },
+  ],
+  Fixer: [
+    { name:'Streetdeal', effect:'Você encontra compradores e vendedores para qualquer coisa. Role COOL + Streetdeal para conseguir itens raros ou vender com bom preço.' },
+    { name:'Operator', effect:'Você tem uma rede de contatos ampla. Uma vez por sessão pode acionar um contato para obter informação, favor ou serviço.' },
+    { name:'Bribery', effect:'Você sabe o preço de todo mundo. Quando subornar NPCs, reduza a dificuldade da rolagem em 2 e o custo em 25%.' },
+  ],
+  Nomad: [
+    { name:'Moto', effect:'Você é um piloto excepcional. +2 em todas as rolagens de pilotagem de veículos terrestres e pode executar manobras impossíveis.' },
+    { name:'Family', effect:'Seu clã te apoia. Uma vez por sessão pode pedir ajuda ao clã — abrigo, informação, suprimentos ou escolta.' },
+    { name:'Scouting', effect:'Você conhece a Badlands como a palma da mão. Pode navegar por terreno hostil sem penalidade e encontrar rotas seguras.' },
+  ],
+};
+
+// ═══════════════════════════════
+// STATS
+// ═══════════════════════════════
+const STAT_NAMES = ['INT','REF','DEX','TECH','COOL','WILL','LUCK','MOVE','BODY','EMP'];
+const statVals = {};
+STAT_NAMES.forEach(s => statVals[s] = 5);
+
+const STAT_INFO = {
+  INT:  { full:'Inteligência',   desc:'Capacidade mental, raciocínio e conhecimento geral.',      uses:'Usado em: Hacking, Ciência, Educação, Investigação, Percepção.' },
+  REF:  { full:'Reflexo',        desc:'Velocidade de reação e coordenação motora fina.',           uses:'Usado em: Armas de fogo, Pilotagem, Combate à distância.' },
+  DEX:  { full:'Destreza',       desc:'Agilidade, equilíbrio e controle corporal.',                uses:'Usado em: Acrobacia, Atletismo, Arma Branca, Furtividade.' },
+  TECH: { full:'Técnica',        desc:'Habilidade com equipamentos, gadgets e construção.',        uses:'Usado em: Cybertech, Eletrônica, Fabricação, Demolições.' },
+  COOL: { full:'Cool',           desc:'Calma sob pressão, presença e autocontrole.',               uses:'Usado em: Persuasão, Intimidação, Enganação, Estilo.' },
+  WILL: { full:'Força de Vontade',desc:'Determinação, resistência mental e espiritual.',           uses:'Usado em: Resistência, Sobrevivência. Afeta penalidades de ferimento.' },
+  LUCK: { full:'Sorte',          desc:'Pontos de sorte gastos para modificar rolagens.',           uses:'Gaste 1 ponto antes de rolar para somar +1 por ponto gasto. Recupera no início da sessão.' },
+  MOVE: { full:'Movimento',      desc:'Velocidade de corrida e distância percorrida em combate.',  uses:'Move ÷ 2 = metros por ação de movimento. Afeta iniciativa.' },
+  BODY: { full:'Corpo',          desc:'Força bruta, físico e capacidade de carregar peso.',        uses:'Usado em: Forcejo, levantar. Afeta HP máximo e dano corpo a corpo.' },
+  EMP:  { full:'Empatia',        desc:'Conexão emocional com outras pessoas — reduzida por implantes.', uses:'Usado em: Conversa, Negociação, Animais. Afeta Humanidade máxima.' },
+};
+
+function buildStats(){
+  const grid = document.getElementById('stat-grid');
+  grid.innerHTML = '';
+  STAT_NAMES.forEach(s => {
+    const info = STAT_INFO[s];
+    const div = document.createElement('div'); div.className='sb';
+    div.innerHTML=`
+      <span class="stat-info">!<span class="stip"><span class="stip-name">${info.full} (${s})</span>${info.desc}<span class="stip-uses">${info.uses}</span></span></span>
+      <label>${s}</label>
+      <span class="sb-val" id="sv-${s}">${statVals[s]}</span>
+      <input type="number" data-h="${s}" id="si-${s}" value="${statVals[s]}" min="1" max="10" style="display:none">
+      <div class="sb-arrows">
+        <button onclick="adjStat('${s}',-1)">▼</button>
+        <button onclick="adjStat('${s}',+1)">▲</button>
+      </div>`;
+    grid.appendChild(div);
+  });
+}
+
+function adjStat(s, delta){
+  const inp = document.getElementById('si-'+s);
+  let v = parseInt(inp.value)||5;
+  v = Math.max(1, Math.min(10, v+delta));
+  inp.value = v;
+  document.getElementById('sv-'+s).textContent = v;
+  statVals[s] = v;
+  inp.dispatchEvent(new Event('input', {bubbles:true}));
+  updateStatPts();
+}
+
+const STAT_MAX_POOL = 62; // 10 stats × avg ~6.2, standard Cyberpunk RED pool
+
+function updateStatPts(){
+  const used = STAT_NAMES.reduce((sum,s)=>sum+(parseInt(document.getElementById('si-'+s)?.value)||5),0);
+  const el = document.getElementById('stat-pts-used');
+  const pips = document.getElementById('stat-pts-pips');
+  if(el){
+    el.textContent = used;
+    el.className = 'pts-val ' + (used > STAT_MAX_POOL ? 'over' : used >= STAT_MAX_POOL*0.9 ? 'warn' : 'ok');
+  }
+  if(pips){
+    pips.innerHTML='';
+    for(let i=0;i<STAT_MAX_POOL;i++){
+      const p=document.createElement('div');
+      p.className='pts-pip'+(i<used?(used>STAT_MAX_POOL?' over':' used'):'');
+      pips.appendChild(p);
+    }
+  }
+}
+
+buildStats();
+updateStatPts();
+
+// ═══════════════════════════════
+// SKILLS
+// ═══════════════════════════════
+const SKILL_DEF = {
+  combat: [
+    {n:'Armas Curtas',     d:'Pistolas, revólveres e SMGs de mão. Atributo base: REF.'},
+    {n:'Armas Longas',     d:'Rifles de assalto, carabinas e rifles de precisão. Atributo base: REF.'},
+    {n:'Espingarda',       d:'Shotguns e espingardas. Atributo base: REF.'},
+    {n:'Arco/Besta',       d:'Arcos, bestas e armas de projétil silenciosas. Atributo base: REF.'},
+    {n:'Ataque Sem Armas', d:'Socos, chutes e artes marciais. Atributo base: DEX.'},
+    {n:'Arma Branca',      d:'Facas, espadas, machados e outras armas corpo a corpo. Atributo base: DEX.'},
+    {n:'Arremesso',        d:'Granadas, facas arremessadas e outros projéteis. Atributo base: DEX.'},
+    {n:'Acrobacia',        d:'Cambalhotas, equilíbrio e manobras ginásticas. Atributo base: DEX.'},
+    {n:'Atletismo',        d:'Correr, saltar, escalar e nadar com destreza. Atributo base: DEX.'},
+    {n:'Furtividade',      d:'Mover-se sem ser detectado, se esconder. Atributo base: DEX.'},
+    {n:'Resistência',      d:'Suportar dor, fadiga e condições extremas. Atributo base: WILL.'},
+    {n:'Natação',          d:'Nadar, mergulhar e se mover na água. Atributo base: DEX.'},
+  ],
+  tech: [
+    {n:'Cybertech',        d:'Instalar, reparar e modificar implantes cibernéticos. Atributo base: TECH.'},
+    {n:'Eletrônica',       d:'Montar, reparar e hackear dispositivos eletrônicos. Atributo base: TECH.'},
+    {n:'Primeiros Socorros',d:'Estabilizar ferimentos, curar HP imediatamente após combate. Atributo base: TECH.'},
+    {n:'Medicina de Campo', d:'Tratar ferimentos graves, cirurgias simples no campo. Atributo base: TECH.'},
+    {n:'Hacking',          d:'Invadir sistemas, quebrar senhas e exploits de software. Atributo base: INT.'},
+    {n:'Interface NET',    d:'Navegar no ciberespaço e usar programas de combat. Atributo base: INT.'},
+    {n:'Pilotagem',        d:'Dirigir veículos terrestres, aéreos e aquáticos. Atributo base: REF.'},
+    {n:'Robótica',         d:'Construir, programar e reparar robôs e drones. Atributo base: TECH.'},
+    {n:'Ciência',          d:'Conhecimento científico: química, biologia, física. Atributo base: INT.'},
+    {n:'Demolições',       d:'Armar, desarmar e usar explosivos com segurança. Atributo base: TECH.'},
+    {n:'Armas Pesadas',    d:'Usar e manter metralhadoras, lançadores e armas de suporte. Atributo base: REF.'},
+    {n:'Fabricação',       d:'Criar itens, armas e equipamentos a partir de materiais. Atributo base: TECH.'},
+  ],
+  social: [
+    {n:'Persuasão',   d:'Convencer alguém através de argumentos ou charme. Atributo base: COOL.'},
+    {n:'Intimidação', d:'Forçar alguém a agir através de ameaça ou medo. Atributo base: COOL.'},
+    {n:'Enganação',   d:'Mentir, blefar e criar falsas impressões. Atributo base: COOL.'},
+    {n:'Interrogação',d:'Extrair informações de alguém resistente. Atributo base: COOL.'},
+    {n:'Conversa',    d:'Interação social cotidiana, criar rapport. Atributo base: EMP.'},
+    {n:'Burocracia',  d:'Navegar em sistemas corporativos, papelada e regulamentos. Atributo base: INT.'},
+    {n:'Negociação',  d:'Chegar a acordos mutuamente benéficos, barganha. Atributo base: EMP.'},
+    {n:'Atuação',     d:'Fingir emoções, interpretar personagens, disfarces verbais. Atributo base: COOL.'},
+    {n:'Composição',  d:'Criar músicas, textos, roteiros e conteúdo artístico. Atributo base: INT.'},
+    {n:'Instrumento', d:'Tocar instrumentos musicais com proficiência. Atributo base: DEX.'},
+    {n:'Estilo',      d:'Aparência, moda e causar impressões visuais. Atributo base: COOL.'},
+    {n:'Etiqueta',    d:'Comportamento social em ambientes formais e corporativos. Atributo base: INT.'},
+  ],
+  world: [
+    {n:'Percepção',         d:'Notar detalhes, detectar perigos e observar o ambiente. Atributo base: INT.'},
+    {n:'Rastreamento',      d:'Seguir rastros, monitorar alvos e encontrar pistas físicas. Atributo base: INT.'},
+    {n:'Info Local',        d:'Conhecimento de uma cidade, bairro ou região específica. Atributo base: INT.'},
+    {n:'Língua Estrangeira',d:'Falar, ler e escrever em um segundo idioma. Atributo base: INT.'},
+    {n:'Educação',          d:'Conhecimento acadêmico geral: história, literatura, ciências. Atributo base: INT.'},
+    {n:'Trivia',            d:'Conhecimentos aleatórios e informações inusitadas. Atributo base: INT.'},
+    {n:'Sobrevivência',     d:'Sobreviver em ambientes hostis, caça, orientação. Atributo base: WILL.'},
+    {n:'Animais',           d:'Lidar, treinar e se comunicar com animais. Atributo base: EMP.'},
+    {n:'Furto',             d:'Pickpocket, esconder objetos e pequenos furtos furtivos. Atributo base: DEX.'},
+    {n:'Arrombamento',      d:'Abrir fechaduras, arrombar portas e cofres. Atributo base: TECH.'},
+    {n:'Fotografia',        d:'Tirar fotos, gravar vídeos e operar câmeras. Atributo base: TECH.'},
+    {n:'Investigação',      d:'Examinar cenas, conectar pistas e deduzir fatos ocultos. Atributo base: INT.'},
+  ],
+};
+
+Object.entries(SKILL_DEF).forEach(([cat,skills])=>{
+  const c=document.getElementById('sk-'+cat);
+  skills.forEach(sk=>{
+    const d=document.createElement('div'); d.className='sr';
+    d.innerHTML=`
+      <span class="skill-info" title="">!<span class="tip"><span class="tip-name">${sk.n}</span>${sk.d}</span></span>
+      <label>${sk.n}</label>
+      <input type="number" data-skill="${sk.n}" min="0" max="10" value="0">`;
+    c.appendChild(d);
+  });
+});
+
+// ═══════════════════════════════
+// ROLE ABILITY SELECTOR
+// ═══════════════════════════════
+function onRoleChange(){
+  const role = document.querySelector('[data-h="role"]').value;
+  const sel = document.getElementById('ability-select');
+  sel.innerHTML = '<option value="">— Selecione a habilidade —</option>';
+  if(ROLE_ABILITIES[role]){
+    ROLE_ABILITIES[role].forEach((ab,i)=>{
+      const o=document.createElement('option'); o.value=i; o.textContent=ab.name;
+      sel.appendChild(o);
+    });
+  } else {
+    sel.innerHTML='<option value="">— Selecione o Role primeiro —</option>';
+  }
+  onAbilityChange();
+  sync();
+}
+
+function onAbilityChange(){
+  const role = document.querySelector('[data-h="role"]').value;
+  const idx = document.getElementById('ability-select').value;
+  const box = document.getElementById('ability-effect-box');
+  const title = document.getElementById('ability-effect-title');
+  const text = document.getElementById('ability-effect-text');
+  if(role && ROLE_ABILITIES[role] && idx!==''){
+    const ab = ROLE_ABILITIES[role][parseInt(idx)];
+    title.textContent = ab.name;
+    text.textContent = ab.effect;
+  } else {
+    title.textContent = '';
+    text.textContent = 'Selecione uma habilidade acima para ver a descrição.';
+  }
+  sync();
+}
+
+// ═══════════════════════════════
+// WOUND TRACK
+// ═══════════════════════════════
+let wounds = 0;
+const WEN = ['Nenhuma','Nenhuma','Nenhuma','-1','−1','−2','−2','−3','−3','MORT.1','MORT.2','MORT.3'];
+
+(()=>{
+  const el=document.getElementById('wound-track');
+  for(let i=0;i<12;i++){
+    const b=document.createElement('div'); b.className='wb';
+    b.addEventListener('click',()=>{ wounds=wounds===i+1?i:i+1; renderWounds(); sync(); });
+    el.appendChild(b);
+  }
+})();
+
+function renderWounds(){
+  document.querySelectorAll('#wound-track .wb').forEach((b,i)=>{
+    b.className='wb'+(i<wounds?(i>=9?' dead':' on'):'');
+    b.textContent=i>=9&&i<wounds?'✕':'';
+    b.style.color=i>=9&&i<wounds?'var(--red)':'';
+  });
+  const pen=document.getElementById('wound-pen');
+  pen.value=WEN[wounds]||'Nenhuma';
+  pen.style.color=wounds>=9?'var(--red)':'var(--yel)';
+}
+renderWounds();
+
+// ═══════════════════════════════
+// HUMANITY TRACK
+// ═══════════════════════════════
+let humanity=30;
+
+(()=>{
+  const el=document.getElementById('hum-track');
+  for(let i=0;i<40;i++){
+    const p=document.createElement('div');
+    p.className='hp'+(i<humanity?' on':'');
+    p.addEventListener('click',()=>{ humanity=humanity===i+1?i:i+1; renderHum(); sync(); });
+    el.appendChild(p);
+  }
+})();
+
+function renderHum(){
+  document.querySelectorAll('#hum-track .hp').forEach((p,i)=>p.classList.toggle('on',i<humanity));
+  const r=humanity/40;
+  const c=document.getElementById('cyberpsy');
+  c.value=r>0.7?'Estável':r>0.4?'Instável':r>0.1?'Limiar de Psicose':'⚠ CYBERPSICOSE';
+}
+renderHum();
+
+// ═══════════════════════════════
+// ARSENAL
+// ═══════════════════════════════
+function addWeapon(v){
+  const vs=v||['','','',''];
+  const d=document.createElement('div'); d.className='ar';
+  d.innerHTML=`
+    <input type="text"   placeholder="Nome da arma"   value="${vs[0]}">
+    <input type="text"   placeholder="Dano (2d6)"     value="${vs[1]}">
+    <input type="text"   placeholder="ROF"            value="${vs[2]}">
+    <input type="text"   placeholder="Conc/Alcance"   value="${vs[3]}">
+    <button class="del" onclick="this.parentElement.remove();sync()">✕</button>`;
+  document.getElementById('arsenal').appendChild(d);
+}
+
+// ═══════════════════════════════
+// ARMOR ARROWS
+// ═══════════════════════════════
+function adjArmor(part, delta){
+  const inp = document.getElementById('ar-'+part);
+  const disp = document.getElementById('av-'+part);
+  let v = parseInt(inp.value)||0;
+  v = Math.max(0, Math.min(20, v+delta));
+  inp.value = v;
+  disp.textContent = v;
+  disp.style.color = v === 0 ? 'var(--dim)' : v >= 15 ? '#00cc66' : v >= 8 ? 'var(--yel)' : 'var(--red)';
+  inp.dispatchEvent(new Event('input', {bubbles:true}));
+}
+
+// ═══════════════════════════════════════════════════════
+// WEAPON PRESETS — Cyberpunk RED Core Rulebook
+// ═══════════════════════════════════════════════════════
+const WEAPON_PRESETS = {
+  'Pistolas': [
+    { name:'Pistola Média',     dmg:'2d6',  rof:2, conc:'J', range:'50m',  cost:50,   type:'Pistola',   desc:'Arma padrão. Confiável e fácil de ocultar. Usada por policiais e civis.' },
+    { name:'Pistola Pesada',    dmg:'3d6',  rof:2, conc:'J', range:'50m',  cost:100,  type:'Pistola',   desc:'Mais poder de parada. Difícil de ocultar, mas lethal.' },
+    { name:'Pistola Muito Pesada',dmg:'4d6', rof:1, conc:'J', range:'50m', cost:100,  type:'Pistola',   desc:'Máximo de dano para uma pistola. ROF lento, recuo brutal.' },
+    { name:'Micro SMG',         dmg:'2d6',  rof:2, conc:'P', range:'25m',  cost:100,  type:'SMG',       desc:'Cabe na palma da mão. Modo automático. Favorita de assassinos.' },
+    { name:'SMG',               dmg:'2d6',  rof:2, conc:'J', range:'25m',  cost:100,  type:'SMG',       desc:'Submetralhadora compacta. Disparo automático com munição pistola.' },
+  ],
+  'Rifles': [
+    { name:'Rifle de Assalto',  dmg:'5d6',  rof:2, conc:'N', range:'400m', cost:500,  type:'Rifle',     desc:'Espinha dorsal do combate militar. Modo semiautomático/rajada.' },
+    { name:'Rifle de Precisão', dmg:'5d6',  rof:1, conc:'N', range:'400m', cost:500,  type:'Rifle',     desc:'Projetado para alvos distantes. Alta precisão, disparo único.' },
+    { name:'Rifle de Batalha',  dmg:'5d6',  rof:2, conc:'N', range:'400m', cost:500,  type:'Rifle',     desc:'Versão militar do rifle de assalto, mais robusto e confiável.' },
+    { name:'Metralhadora Leve', dmg:'5d6',  rof:2, conc:'N', range:'400m', cost:500,  type:'Rifle',     desc:'Suporte de fogo. Carregador grande, disparo contínuo.' },
+    { name:'Metralhadora Pesada',dmg:'5d6+5',rof:2,conc:'N', range:'400m', cost:1000, type:'Rifle',     desc:'Arma de supressão. Dano devastador, difícil de manobrar.' },
+    { name:'Rifle Antitanque',  dmg:'5d6',  rof:1, conc:'N', range:'400m', cost:500,  type:'Rifle',     desc:'Perfura blindagem. Ignora metade do SP de armaduras.' },
+  ],
+  'Espingardas': [
+    { name:'Espingarda Simples', dmg:'3d6', rof:1, conc:'L', range:'50m',  cost:50,   type:'Espingarda',desc:'Dois canos, dois disparos. Ótima para curta distância.' },
+    { name:'Espingarda Pump',   dmg:'3d6',  rof:1, conc:'L', range:'50m',  cost:100,  type:'Espingarda',desc:'Clássico. Confiável, fácil de manter, som intimidador.' },
+    { name:'Espingarda Semi',   dmg:'3d6',  rof:2, conc:'N', range:'50m',  cost:500,  type:'Espingarda',desc:'Disparo semiautomático. Mais caro, cadência maior.' },
+  ],
+  'Armas Pesadas': [
+    { name:'Lança-Foguetes',    dmg:'7d6',  rof:1, conc:'N', range:'200m', cost:500,  type:'Pesada',    desc:'Dispara foguetes antitanque. Efeito de área. Requer duas mãos.' },
+    { name:'Morteiro',          dmg:'4d6',  rof:1, conc:'N', range:'200m', cost:500,  type:'Pesada',    desc:'Arma de área. Pode atacar atrás de cobertura.' },
+    { name:'Grenade Launcher',  dmg:'6d6',  rof:1, conc:'N', range:'200m', cost:500,  type:'Pesada',    desc:'Lança granadas de 40mm. Efeito de área 2m.' },
+    { name:'Plasma Cannon',     dmg:'9d6',  rof:1, conc:'N', range:'50m',  cost:1000, type:'Pesada',    desc:'Topo de linha. Dano de plasma não é reduzido por SP.' },
+    { name:'Autocannão',        dmg:'5d6',  rof:2, conc:'N', range:'400m', cost:1000, type:'Pesada',    desc:'Metralhadora calibre 20mm. Montada em veículos ou tripé.' },
+  ],
+  'Corpo a Corpo': [
+    { name:'Faca',              dmg:'1d6',  rof:2, conc:'P', range:'1m',   cost:20,   type:'Melee',     desc:'Discreta e mortal. Pode ser arremessada.' },
+    { name:'Faca Pesada',       dmg:'2d6',  rof:2, conc:'J', range:'1m',   cost:20,   type:'Melee',     desc:'Machete, cutelo. Mais dano, menos ocultabilidade.' },
+    { name:'Espada',            dmg:'2d6+2',rof:2, conc:'N', range:'1m',   cost:200,  type:'Melee',     desc:'Exige Arma Branca 5+. Dano superior e alcance.' },
+    { name:'Katana',            dmg:'2d6+2',rof:2, conc:'N', range:'1m',   cost:200,  type:'Melee',     desc:'Status e performance. +1 em ataques quando Arma Branca ≥ 6.' },
+    { name:'Bastão',            dmg:'1d6',  rof:2, conc:'J', range:'1m',   cost:10,   type:'Melee',     desc:'Contundente. Causa dano atordoante se vencer defesa por 5+.' },
+    { name:'Corrente',          dmg:'1d6',  rof:2, conc:'J', range:'2m',   cost:10,   type:'Melee',     desc:'Alcance 2m. Pode enroscar membros (DV 15 Athletics para escapar).' },
+    { name:'Luta Desarmada',    dmg:'1d6',  rof:2, conc:'P', range:'1m',   cost:0,    type:'Melee',     desc:'Soco, chute, agarrar. Nenhum equipamento necessário.' },
+    { name:'Tonfas / Cassetete',dmg:'1d6',  rof:2, conc:'J', range:'1m',   cost:10,   type:'Melee',     desc:'Arma policial. Aumento de dano com habilidade Arma Branca.' },
+  ],
+  'Exóticas': [
+    { name:'Besta',             dmg:'1d6',  rof:1, conc:'L', range:'100m', cost:100,  type:'Exótica',   desc:'Silenciosa, sem pólvora. Bom para ambientes sem barulho.' },
+    { name:'Arco',              dmg:'1d6',  rof:1, conc:'N', range:'100m', cost:100,  type:'Exótica',   desc:'Flechas reutilizáveis. Modificações avançadas disponíveis.' },
+    { name:'Shuriken',          dmg:'1d6',  rof:2, conc:'P', range:'20m',  cost:20,   type:'Exótica',   desc:'Estrela ninja. Concealable, arremesso rápido.' },
+    { name:'Tazer',             dmg:'—',    rof:1, conc:'P', range:'1m',   cost:50,   type:'Exótica',   desc:'Causa 1d6 de dano que ignora armadura. Alvo pode ser atordoado.' },
+    { name:'Pistola de Paintball',dmg:'—',  rof:2, conc:'J', range:'25m',  cost:20,   type:'Exótica',   desc:'Projéteis não letais. Usada para sinalização ou distração.' },
+    { name:'Monomolecular Wire',dmg:'4d6',  rof:2, conc:'P', range:'1m',   cost:100,  type:'Exótica',   desc:'Fio invisível. Ignora metade do SP. Exige Arma Branca 6+.' },
+  ],
+  'Medicamentos': [
+    { name:'Trauma Team Patch',  dmg:'—', rof:1, conc:'P', range:'—', cost:50,   type:'Med', desc:'Estabiliza paciente crítico imediatamente. Cura 3 HP. Uso único. Padrão dos Trauma Teams.' },
+    { name:'Stim (Stimulant)',   dmg:'—', rof:1, conc:'P', range:'—', cost:20,   type:'Med', desc:'Suprime penalidades de ferimento por 1 hora. Após efeito: −2 em todas as rolagens por 1 hora.' },
+    { name:'Airhypo',           dmg:'—', rof:1, conc:'P', range:'—', cost:50,   type:'Med', desc:'Injeta qualquer droga em spray. Entrega instantânea sem agulha. Necessário para uso rápido em combate.' },
+    { name:'Speedheal',         dmg:'—', rof:1, conc:'P', range:'—', cost:100,  type:'Med', desc:'Dobra a recuperação natural de HP por 24h. Apenas uma dose por semana é segura.' },
+    { name:'Regen',             dmg:'—', rof:1, conc:'P', range:'—', cost:500,  type:'Med', desc:'Regenera 3 HP por rodada por 10 rodadas. Somente ferimentos recentes (< 1 hora). Viciante.' },
+    { name:'Synthcoke',         dmg:'—', rof:1, conc:'P', range:'—', cost:20,   type:'Droga', desc:'+1 REF e +1 COOL por 1 hora. Pós-efeito: −2 REF e −2 COOL por 1d6 horas. Altamente viciante.' },
+    { name:'Black Lace',        dmg:'—', rof:1, conc:'P', range:'—', cost:50,   type:'Droga', desc:'Berserker. +2 BODY e WILL, ignora penalidades de ferimento. Perda de consciência moral. Extremamente viciante.' },
+    { name:'Blue Glass',        dmg:'—', rof:1, conc:'P', range:'—', cost:20,   type:'Droga', desc:'Alucinógeno suave. Reduz estresse. −1 INT e −1 REF. Pode causar crise de pânico (DV 15 WILL).' },
+    { name:'Smash',             dmg:'—', rof:1, conc:'P', range:'—', cost:10,   type:'Droga', desc:'Estimulante barato. +1 BODY por 1d6 horas. Pós-efeito: exaustão severa. Muito viciante.' },
+    { name:'Dorph',             dmg:'—', rof:1, conc:'P', range:'—', cost:20,   type:'Droga', desc:'Bloqueador de dor avançado. Ignora penalidade −1 e −2 de ferimento. Risco de overdose se combinado.' },
+    { name:'Boost',             dmg:'—', rof:1, conc:'P', range:'—', cost:50,   type:'Droga', desc:'+2 em uma perícia escolhida por 1 hora. Pós-efeito: −1 na mesma perícia por 4 horas.' },
+    { name:'Kibble (Antidote)', dmg:'—', rof:1, conc:'P', range:'—', cost:50,   type:'Med', desc:'Antídoto genérico. Neutraliza a maioria dos venenos e drogas se aplicado em até 10 min da ingestão.' },
+    { name:'Toxin Binders (pill)',dmg:'—',rof:1, conc:'P', range:'—', cost:20,   type:'Med', desc:'+4 em rolagens contra drogas e venenos por 4 horas. Preventivo.' },
+    { name:'Surge',             dmg:'—', rof:1, conc:'P', range:'—', cost:200,  type:'Med', desc:'Restaura 1d6 HP imediatamente. Pode ser usada em combate como ação simples.' },
+  ],
+  'Granada & Explosivos': [
+    { name:'Granada Fragmentation',dmg:'6d6',rof:1,conc:'P', range:'30m',  cost:50,   type:'Granada',   desc:'Área 4m. Fragmentos causam dano adicional a descoberto.' },
+    { name:'Granada Concussão', dmg:'4d6',  rof:1, conc:'P', range:'30m',  cost:50,   type:'Granada',   desc:'Área 6m. Menos dano, maior área. Atordoa com dano ≥ 5.' },
+    { name:'Granada de Gás',    dmg:'—',    rof:1, conc:'P', range:'30m',  cost:50,   type:'Granada',   desc:'Libera gás tóxico em área 4m. Requer máscara ou 2d6/turno.' },
+    { name:'Granada Incendiária',dmg:'2d6', rof:1, conc:'P', range:'30m',  cost:100,  type:'Granada',   desc:'Fogo por 3 turnos em área 2m. Dano ignoram SP.' },
+    { name:'Bomba Caseira',     dmg:'6d6',  rof:1, conc:'N', range:'—',    cost:20,   type:'Granada',   desc:'Fabricado com sucata. Instável — falha em 1 no d10.' },
+  ],
+};
+
+// ═══════════════════════════════════════════════════════
+// CYBERWARE PRESETS — Cyberpunk RED Core Rulebook
+// ═══════════════════════════════════════════════════════
+const CYBER_PRESETS = {
+  'Córtex Frontal / Cabeça': {
+    zone: 'head',
+    zoneKey: 'head',
+    items: [
+      { name:'Interface Neural',      hum:2, cost:500,  desc:'Permite uso de smartguns e dispositivos cyberlink. Requisito para muitos implantes.' },
+      { name:'Chipware Socket',       hum:0, cost:200,  desc:'Encaixe para chips de dados. Armazena habilidades ou idiomas temporariamente.' },
+      { name:'Machine/Tech Link',     hum:0, cost:200,  desc:'Conecta-se a veículos, drones e sistemas industriais pelo pensamento.' },
+      { name:'EMP Shielding',         hum:0, cost:500,  desc:'Protege todo o cyberware de pulsos eletromagnéticos.' },
+      { name:'DataKrash Shielding',   hum:0, cost:1000, desc:'Proteção contra ataques de ICE e datakrash no NET.' },
+      { name:'Anti-Smash',            hum:0, cost:500,  desc:'Absorve impactos no crânio. +2 SP na cabeça.' },
+    ]
+  },
+  'Olhos / Sistema Ocular': {
+    zone: 'eyes',
+    items: [
+      { name:'Cybereye (Básico)',      hum:2, cost:100,  desc:'Olho cibernético. Base para mods ópticos. Pode ter cor personalizada.' },
+      { name:'Targeting Scope',       hum:2, cost:500,  desc:'+1 em todos os ataques com armas. Marca alvos com reticle HUD.' },
+      { name:'Image Enhancement',     hum:2, cost:500,  desc:'+2 em Percepção com visão. Amplia detalhes a longa distância.' },
+      { name:'Low Light / Infrared',  hum:2, cost:500,  desc:'Enxerga em baixa luz ou calor. Anula penalidades de escuridão.' },
+      { name:'MicroOptics',           hum:2, cost:500,  desc:'Zoom de até 400x. Leitura de texto à 200m de distância.' },
+      { name:'AntiDazzle',            hum:0, cost:100,  desc:'Proteção contra flashes, lasers e granadas de luz.' },
+      { name:'Chyron Display',        hum:0, cost:100,  desc:'Overlay de texto HUD no campo visual. Notificações e dados.' },
+      { name:'Virtuality Coder',      hum:2, cost:500,  desc:'Sobrepõe realidade aumentada ao mundo real.' },
+    ]
+  },
+  'Sistema Nervoso': {
+    zone: 'leg_l',
+    items: [
+      { name:'Kerenzikov',            hum:2, cost:500,  desc:'Reflexos acelerados. +2 em Initiative e +1 em ataques/defesas.' },
+      { name:'Sandevistan',           hum:3, cost:500,  desc:'Modo de aceleração. Dobra ações por turno por 1d6 turnos/dia.' },
+      { name:'Synaptic Accelerator',  hum:3, cost:500,  desc:'+3 em REF enquanto ativo. Curto uso — 3 vezes por sessão.' },
+      { name:'Nano-Ware Neural',      hum:2, cost:1000, desc:'Nanobots neurais. +1 permanente em INT.' },
+      { name:'Pain Editor',           hum:3, cost:1000, desc:'Bloqueia sensação de dor. Ignora penalidades de ferimento graves (-1 e -2).' },
+      { name:'Reflex Co-Processor',   hum:2, cost:500,  desc:'+1 em Esquiva e ataques corpo a corpo.' },
+    ]
+  },
+  'Sistema Circulatório': {
+    zone: 'torso',
+    items: [
+      { name:'Nasal Filters',         hum:0, cost:100,  desc:'Filtra toxinas aéreas. Imunidade a gases e fumaça tóxica.' },
+      { name:'Toxin Binders',         hum:0, cost:100,  desc:'Neutraliza venenos ingeridos. +4 em testes contra drogas.' },
+      { name:'Olfactory Boost',       hum:0, cost:100,  desc:'+2 em Percepção baseada em cheiro. Detecta odores a grande distância.' },
+      { name:'Enhanced Antibodies',   hum:2, cost:500,  desc:'Cura 2 HP adicionais por dia de descanso.' },
+      { name:'Grafted Muscle/Bone',   hum:3, cost:1000, desc:'+2 BODY. Também aumenta carga máxima.' },
+      { name:'Implanted LinearFrame', hum:3, cost:1000, desc:'Exoesqueleto interno. +3 BODY mas parece mecânico.' },
+    ]
+  },
+  'Braço Esquerdo': {
+    zone: 'arm_l',
+    items: [
+      { name:'Cyberarm',              hum:3, cost:500,  desc:'Braço cibernético completo. Base para todos os mods de braço.' },
+      { name:'Big Knucks',            hum:2, cost:100,  desc:'Nós dos dedos blindados. Dano briga: 2d6.' },
+      { name:'Rippers',               hum:3, cost:500,  desc:'Garras retrácteis. Dano: 3d6. Contam como armas pesadas.' },
+      { name:'Wolvers',               hum:3, cost:500,  desc:'Garras de adamantina. Dano: 3d6+2. Perfura blindagem leve.' },
+      { name:'MedTech Body (Esq)',    hum:2, cost:500,  desc:'Braço com compartimento oculto médico. Armazena kit de PF.' },
+      { name:'Grapple Hand',          hum:2, cost:500,  desc:'Lança garra com cabo de 10m. Agarrar ou escalar.' },
+      { name:'Popup Grenade Launcher',hum:3, cost:1000, desc:'Lançador integrado ao antebraço. 2 granadas. Conceal: impossível.' },
+      { name:'Shotgun (Arm)',         hum:3, cost:1000, desc:'Escopeta embutida. 2 disparos. Dano: 3d6.' },
+    ]
+  },
+  'Braço Direito': {
+    zone: 'arm_r',
+    items: [
+      { name:'Cyberarm',              hum:3, cost:500,  desc:'Braço cibernético completo. Base para todos os mods de braço.' },
+      { name:'Big Knucks',            hum:2, cost:100,  desc:'Nós dos dedos blindados. Dano briga: 2d6.' },
+      { name:'Rippers',               hum:3, cost:500,  desc:'Garras retrácteis. Dano: 3d6. Contam como armas pesadas.' },
+      { name:'Wolvers',               hum:3, cost:500,  desc:'Garras de adamantina. Dano: 3d6+2. Perfura blindagem leve.' },
+      { name:'Quick Change Mount',    hum:2, cost:500,  desc:'Troca de mão rápida. Equipa/desequipa armas como ação livre.' },
+      { name:'Grapple Hand',          hum:2, cost:500,  desc:'Lança garra com cabo de 10m. Agarrar ou escalar.' },
+      { name:'Popup Grenade Launcher',hum:3, cost:1000, desc:'Lançador integrado ao antebraço. 2 granadas. Conceal: impossível.' },
+      { name:'Shotgun (Arm)',         hum:3, cost:1000, desc:'Escopeta embutida. 2 disparos. Dano: 3d6.' },
+    ]
+  },
+  'Sistema Imunológico': {
+    zone: 'hips',
+    items: [
+      { name:'Midnight Lady / Midnight Man', hum:0, cost:100, desc:'Implante de sedução subdermal. +2 em interações sociais íntimas.' },
+      { name:'Contraceptive Implant', hum:0, cost:100,  desc:'Contraceptivo permanente. Opcional e reversível.' },
+      { name:'Biomonitor',            hum:0, cost:100,  desc:'Monitora sinais vitais. Alerta automático em emergência médica.' },
+      { name:'Radar/Sonar Implant',   hum:2, cost:500,  desc:'Detecta movimento em 10m. Funciona mesmo com olhos fechados.' },
+      { name:'Subdermal Armor',       hum:3, cost:1000, desc:'+4 SP em todo o corpo. Indetectável visualmente.' },
+      { name:'Subdermal Pocket',      hum:0, cost:100,  desc:'Bolso escondido sob a pele. Guarda 1 item pequeno.' },
+    ]
+  },
+  'Pernas / Esqueleto': {
+    zone: 'leg_r',
+    items: [
+      { name:'Cyberleg',              hum:3, cost:500,  desc:'Perna cibernética completa. Base para mods de perna.' },
+      { name:'Grip Foot',             hum:2, cost:500,  desc:'Andar em paredes e tetos (superfícies não lisas). Velocidade normal.' },
+      { name:'Jump Booster',          hum:3, cost:500,  desc:'Dobra altura e distância de salto. Aterrisagem suavizada.' },
+      { name:'Speedy Gonzalvez',      hum:2, cost:500,  desc:'+4 MOVE enquanto correndo em linha reta.' },
+      { name:'Talon Foot',            hum:2, cost:100,  desc:'Garras nos pés. Dano de chute: 3d6.' },
+      { name:'Smuggler Compartment',  hum:0, cost:500,  desc:'Compartimento oculto na perna. Guarda item médio (pistola, kit).' },
+    ]
+  },
+};
+
+
+// ═══════════════════════════════
+// CYBERWARE CP2077
+// ═══════════════════════════════
+const CYBER_ZONES = {
+  head:   { label:'Córtex / Cabeça',      slots:3, side:'left',  presetCat:'Córtex Frontal / Cabeça'   },
+  eyes:   { label:'Sistema Ocular',       slots:4, side:'left',  presetCat:'Olhos / Sistema Ocular'    },
+  torso:  { label:'Sist. Circulatório',   slots:4, side:'left',  presetCat:'Sistema Circulatório'      },
+  hips:   { label:'Sist. Imunológico',    slots:2, side:'left',  presetCat:'Sistema Imunológico'       },
+  arm_l:  { label:'Braço Esquerdo',       slots:3, side:'right', presetCat:'Braço Esquerdo'            },
+  arm_r:  { label:'Braço Direito',        slots:3, side:'right', presetCat:'Braço Direito'             },
+  leg_l:  { label:'Sistema Nervoso',      slots:3, side:'right', presetCat:'Sistema Nervoso'           },
+  leg_r:  { label:'Pernas / Esqueleto',   slots:3, side:'right', presetCat:'Pernas / Esqueleto'        },
+};
+
+const cyberData = {};
+Object.keys(CYBER_ZONES).forEach(z => cyberData[z] = []);
+// preset zones are initialised after CYBER_PRESETS is declared (see initPresets)
+let activeCyberZone = null;
+
+function buildCyberUI(){
+  const leftEl  = document.getElementById('cw-left');
+  const rightEl = document.getElementById('cw-right');
+  if(!leftEl||!rightEl) return;
+  leftEl.innerHTML=''; rightEl.innerHTML='';
+  Object.entries(CYBER_ZONES).forEach(([key,z])=>{
+    const items = cyberData[key]||[];
+    const filled = items.filter(i=>i.name).length;
+    const hasCyber = filled>0;
+    const isActive = activeCyberZone===key;
+    const div = document.createElement('div');
+    div.className = 'cw-sys'+(isActive?' cw-sys-active':'')+(hasCyber?' cw-sys-has':'');
+    div.id = 'cwsys-'+key;
+    div.onclick = ()=>openCyberDetail(key);
+    div.innerHTML = `
+      <div class="cw-connector"></div>
+      <div class="cw-sys-inner">
+        <span class="cw-sys-name">${z.label.toUpperCase()}</span>
+        <span class="cw-sys-badge">${hasCyber?filled+'/'+z.slots:'+'}</span>
+      </div>`;
+    if(z.side==='left') leftEl.appendChild(div);
+    else rightEl.appendChild(div);
+    // sync SVG zone
+    const svgZ = document.getElementById('cwz-'+key);
+    if(svgZ){
+      svgZ.className.baseVal = 'cw-zone'+(hasCyber?' cw-has':'')+(isActive?' cw-active':'');
+    }
+  });
+}
+
+function openCyberDetail(zone){
+  activeCyberZone = zone;
+  buildCyberUI();
+  renderCyberDetail();
+  document.getElementById('cw-detail').classList.add('open');
+  document.getElementById('cw-overlay').classList.add('open');
+}
+
+function closeCyberDetail(){
+  document.getElementById('cw-detail').classList.remove('open');
+  document.getElementById('cw-overlay').classList.remove('open');
+  activeCyberZone = null;
+  buildCyberUI();
+}
+
+function renderCyberDetail(){
+  if(!activeCyberZone) return;
+  const z = CYBER_ZONES[activeCyberZone];
+  const items = cyberData[activeCyberZone];
+  const zHum = items.reduce((s,i)=>s+(parseInt(i.hum)||0),0);
+  document.getElementById('cw-det-title').textContent = z.label.toUpperCase();
+  document.getElementById('cw-det-sub').textContent = `SLOTS: ${items.length}/${z.slots}  ·  HUMANIDADE: ${zHum}`;
+  document.getElementById('cw-det-hum').textContent = zHum;
+  let h = '<label style="margin-bottom:8px;display:block;letter-spacing:3px;">IMPLANTES</label>';
+  if(items.length===0){
+    h += `<div class="cw-slot-empty">NENHUM IMPLANTE INSTALADO</div>`;
+  } else {
+    items.forEach((item,i)=>{
+      h += `<div class="cw-slot-row">
+        <input type="text" placeholder="Nome do implante" value="${item.name||''}"
+          oninput="cyberData['${activeCyberZone}'][${i}].name=this.value;updateCyberHum();buildCyberUI();sync();">
+        <input type="number" min="0" max="8" placeholder="Hum" value="${item.hum||0}"
+          style="text-align:center;color:var(--red);"
+          oninput="cyberData['${activeCyberZone}'][${i}].hum=parseInt(this.value)||0;updateCyberHum();renderCyberDetail();sync();">
+        <button class="del" onclick="cyberData['${activeCyberZone}'].splice(${i},1);renderCyberDetail();updateCyberHum();buildCyberUI();sync();">✕</button>
+      </div>`;
+    });
+  }
+  if(items.length < z.slots){
+    h += `<div style="display:flex;gap:8px;margin-top:6px;">`;
+    h += `<button class="cw-add-btn" style="flex:1;border-color:var(--yel);color:var(--yel);" onclick="openCyberModal('${activeCyberZone}')">&#9998; CATÁLOGO</button>`;
+    h += `<button class="cw-add-btn" style="flex:1;" onclick="cyberData['${activeCyberZone}'].push({name:'',hum:0});renderCyberDetail();buildCyberUI();sync();">+ MANUAL</button>`;
+    h += `</div>`;
+  } else {
+    h += `<div style="font-family:var(--mono);font-size:0.6rem;color:var(--red);margin-top:8px;letter-spacing:2px;">SLOTS MÁXIMOS ATINGIDOS</div>`;
+  }
+  document.getElementById('cw-det-body').innerHTML = h;
+}
+
+function updateCyberHum(){
+  let total = 0;
+  Object.values(cyberData).forEach(items=>items.forEach(i=>total+=parseInt(i.hum)||0));
+  const el = document.getElementById('cyber-hum-total');
+  if(el){ el.textContent = total+' pts'; el.style.color=total>8?'var(--red)':total>3?'var(--yel)':'var(--dim)'; }
+}
+
+// Also add SVG zone click handlers after build
+document.addEventListener('click', e=>{
+  const z = e.target.dataset?.zone;
+  if(z && CYBER_ZONES[z]) openCyberDetail(z);
+});
+
+// Legacy addCyber kept for save/load compatibility (no-op body)
+function addCyber(v){ /* replaced by CP2077 map */ }
+
+
+
+// ═══════════════════════════════
+// INVENTORY
+// ═══════════════════════════════
+const INV={
+  w:{cls:'iw',ph:['Nome/Modelo','Dano','ROF','Alcance','Qtd'],t:['text','text','text','text','number']},
+  a:{cls:'ia',ph:['Nome','SP Cabeça','SP Corpo','Penalidade'],t:['text','number','number','text']},
+  g:{cls:'ig',ph:['Item','Descrição','Qtd'],t:['text','text','number']},
+  d:{cls:'id',ph:['Nome','Efeito/Duração','Qtd'],t:['text','text','number']},
+};
+
+function addInv(type,vals){
+  const cfg=INV[type];
+  const row=document.createElement('div'); row.className='ir '+cfg.cls;
+  let h='';
+  cfg.ph.forEach((ph,i)=>{
+    const v=vals?(vals[i]||''):'';
+    h+=`<input type="${cfg.t[i]}" placeholder="${ph}" value="${v}" ${cfg.t[i]==='number'?'min="0"':''}>`;
+  });
+  h+=`<button class="del" onclick="this.parentElement.remove();countInv();sync()">✕</button>`;
+  row.innerHTML=h;
+  document.getElementById('inv-'+type).appendChild(row);
+  countInv();
+}
+
+function countInv(){
+  let n=0;
+  ['w','a','g','d'].forEach(t=>n+=document.querySelectorAll('#inv-'+t+' .ir').length);
+  document.getElementById('inv-count').textContent=n;
+}
+
+function switchInv(type,btn){
+  document.querySelectorAll('.itab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.ipane').forEach(p=>p.classList.remove('on'));
+  document.getElementById('ip-'+type).classList.add('on');
+}
+
+// ═══════════════════════════════
+// PAGE TABS
+// ═══════════════════════════════
+function goTab(which,btn){
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pane-'+which).classList.add('on');
+  if(which==='hud') sync();
+}
+
+// ═══════════════════════════════
+// SYNC — HUD reads from sheet
+// ═══════════════════════════════
+const ICONS={Rockerboy:'🎸',Solo:'🔫',Netrunner:'💻',Tech:'🔧',Medtech:'💊',Media:'📷',Exec:'💼',Lawman:'⚖',Fixer:'🤝',Nomad:'🏍'};
+
+function sync(){
+  const $=id=>document.getElementById(id);
+  const qa=sel=>document.querySelectorAll(sel);
+  const dh=k=>{const el=document.querySelector(`#pane-sheet [data-h="${k}"]`);return el?el.value.trim():'';};
+  const fi=k=>parseInt(dh(k))||0;
+
+  // Identity
+  $('H_nome').textContent=dh('nome')||'— SEM NOME —';
+  $('H_role').textContent=(dh('role')||'ROLE NÃO DEFINIDO')+' · LVL '+(dh('rolelv')||'—');
+  const hudAv=$('H_avatar_img');
+  if(hudAv){
+    if(avatarData){ hudAv.innerHTML=`<img src="${avatarData}" style="width:100%;height:100%;object-fit:cover;min-height:160px;">`; }
+    else { hudAv.innerHTML='<span style="font-size:3rem;">'+(ICONS[dh('role')]||'🤖')+'</span>'; }
+  }
+  $('H_cultura').textContent='ORIGEM: '+(dh('cultura')||'—');
+  $('H_afil').textContent='AFIL: '+(dh('afil')||'—');
+
+  // HP — sync from sheet to HUD editable fields
+  const hpcur=parseInt(document.getElementById('hp-cur').value)||0;
+  const hpmax=Math.max(1,parseInt(document.getElementById('hp-max').value)||1);
+  $('H_hpcur').value=hpcur; $('H_hpmax').value=hpmax;
+
+  // HP bar
+  const pct=Math.max(0,Math.min(1,hpcur/hpmax));
+  const bar=$('H_hpbar'); bar.style.width=(pct*100)+'%'; bar.className='hfill'+(pct>0.5?' ok':'');
+  const wb=$('H_wbadge'),pd=$('H_pen');
+  pd.textContent='Penalidade: '+(WEN[wounds]||'Nenhuma');
+  if(wounds===0){wb.className='badge ok';wb.textContent='ÍNTEGRO';}
+  else if(wounds<6){wb.className='badge warn';wb.textContent='FERIDO';}
+  else if(wounds<9){wb.className='badge crit';wb.textContent='CRÍTICO';}
+  else{wb.className='badge crit';wb.textContent='MORIBUNDO';}
+
+  // Wound boxes
+  const hwb=$('H_wboxes'); hwb.innerHTML='';
+  for(let i=0;i<12;i++){
+    const b=document.createElement('div');
+    b.className='hwb'+(i<wounds?(i>=9?' dead':' on'):'');
+    b.textContent=i>=9&&i<wounds?'✕':''; hwb.appendChild(b);
+  }
+
+  // Stats
+  const hs=$('H_stats'); hs.innerHTML='';
+  STAT_NAMES.forEach(s=>{
+    const v=document.getElementById('si-'+s)?.value||'—';
+    hs.innerHTML+=`<div class="hsc"><span class="hl">${s}</span><span class="hv">${v}</span></div>`;
+  });
+
+  // Humanity — sync from sheet to HUD
+  const humcur=parseInt(document.getElementById('hum-cur').value)||0;
+  const hummax=Math.max(1,parseInt(document.getElementById('hum-max').value)||1);
+  $('H_humcur').value=humcur; $('H_hummax').value=hummax;
+
+  const ht=$('H_hpips'); ht.innerHTML='';
+  for(let i=0;i<40;i++){const p=document.createElement('div');p.className='hpp'+(i<humanity?' on':'');ht.appendChild(p);}
+  const cb=$('H_cybadge'),r=humanity/40;
+  if(r>0.7){cb.className='badge ok';cb.textContent='ESTÁVEL';}
+  else if(r>0.4){cb.className='badge warn';cb.textContent='INSTÁVEL';}
+  else if(r>0.1){cb.className='badge crit';cb.textContent='LIMIAR';}
+  else{cb.className='badge crit';cb.textContent='⚠ CYBERPSICOSE';}
+
+  // Cyberware (body map)
+  const cl=$('H_cyber'); let ch='';
+  Object.entries(cyberData).forEach(([zone,items])=>{
+    items.forEach(item=>{
+      if(item.name) ch+=`<div class="hcr"><span class="hcn">${item.name}</span><span class="hcl">${CYBER_ZONES[zone]?.label||zone}</span></div>`;
+    });
+  });
+  cl.innerHTML=ch||'<div class="empty">NENHUM IMPLANTE</div>';
+
+  // Skills
+  const sg=$('H_skills'); let sh='';
+  qa('#pane-sheet [data-skill]').forEach(el=>{
+    const v=parseInt(el.value)||0;
+    if(v>=1) sh+=`<div class="hskr"><span class="n">${el.dataset.skill}</span><span class="v">${v}</span></div>`;
+  });
+  sg.innerHTML=sh||'<div class="empty" style="grid-column:1/-1">NENHUMA PERÍCIA DEFINIDA</div>';
+
+  // Arsenal
+  const wl=$('H_weapons'); let wh='',hasW=false;
+  qa('#arsenal .ar').forEach(row=>{
+    const ins=row.querySelectorAll('input');
+    const n=(ins[0]?.value||'').trim(),d=(ins[1]?.value||'').trim(),rf=(ins[2]?.value||'').trim(),al=(ins[3]?.value||'').trim();
+    if(!n)return; hasW=true;
+    wh+=`<div class="hwr"><span class="wn">${n}</span><span class="wd">${d||'—'}</span><span class="wr">ROF ${rf||'—'}</span><span class="wl">${al||'—'}</span></div>`;
+  });
+  wl.innerHTML=hasW?wh:'<div class="empty">NENHUMA ARMA</div>';
+
+  // Inventory summaries
+  function isum(type,hid){
+    const rows=qa('#inv-'+type+' .ir');
+    if(!rows.length){$(hid).innerHTML='<div class="empty" style="font-size:.65rem;padding:3px 0">—</div>';return;}
+    let h='';
+    rows.forEach(row=>{
+      const ins=row.querySelectorAll('input');
+      const n=(ins[0]?.value||'').trim(),q=(ins[ins.length-1]?.value||'').trim();
+      if(n) h+=`<div class="him">${n}${q?` <span style="color:var(--yel)">×${q}</span>`:''}</div>`;
+    });
+    $(hid).innerHTML=h||'<div class="empty" style="font-size:.65rem;padding:3px 0">—</div>';
+  }
+  isum('w','H_iw'); isum('g','H_ig'); isum('d','H_id');
+
+  // Role ability
+  const role=dh('role');
+  const aidx=document.getElementById('ability-select')?.value;
+  if(role&&ROLE_ABILITIES[role]&&aidx!==''){
+    const ab=ROLE_ABILITIES[role][parseInt(aidx)];
+    $('H_abn').textContent=ab.name;
+    $('H_abd').textContent=ab.effect;
+  } else {
+    $('H_abn').textContent='—';
+    $('H_abd').textContent='—';
+  }
+  $('H_abl').textContent='Nível '+(dh('abl')||'—');
+
+  // Sync Euro from sheet to HUD editable inputs (only if HUD not focused)
+  const hudEbm=$('H_ebm'), hudEbb=$('H_ebb'), hudIp=$('H_ip'), hudDiv=$('H_div');
+  const shEbm=document.querySelector('#pane-sheet [data-h="ebm"]');
+  const shEbb=document.querySelector('#pane-sheet [data-h="ebb"]');
+  const shIp=document.querySelector('#pane-sheet [data-h="ip"]');
+  const shDiv=document.querySelector('#pane-sheet [data-h="div"]');
+  if(hudEbm&&shEbm&&document.activeElement!==hudEbm) hudEbm.value=shEbm.value;
+  if(hudEbb&&shEbb&&document.activeElement!==hudEbb) hudEbb.value=shEbb.value;
+  if(hudIp&&shIp&&document.activeElement!==hudIp)   hudIp.value=shIp.value;
+  if(hudDiv&&shDiv&&document.activeElement!==hudDiv) hudDiv.value=shDiv.value;
+}
+
+// ═══════════════════════════════
+// HUD EDITABLE FIELDS → sync back to sheet
+// ═══════════════════════════════
+function hudToSheet(hudId, sheetSelector){
+  const hEl=document.getElementById(hudId);
+  const sEl=document.querySelector(sheetSelector);
+  if(hEl&&sEl){ hEl.addEventListener('input',()=>{ sEl.value=hEl.value; sync(); }); }
+}
+// HP
+document.getElementById('H_hpcur').addEventListener('input',()=>{
+  document.getElementById('hp-cur').value=document.getElementById('H_hpcur').value; sync();
+});
+document.getElementById('H_hpmax').addEventListener('input',()=>{
+  document.getElementById('hp-max').value=document.getElementById('H_hpmax').value; sync();
+});
+// Humanity
+document.getElementById('H_humcur').addEventListener('input',()=>{
+  document.getElementById('hum-cur').value=document.getElementById('H_humcur').value; sync();
+});
+document.getElementById('H_hummax').addEventListener('input',()=>{
+  document.getElementById('hum-max').value=document.getElementById('H_hummax').value; sync();
+});
+// Euro/IP/Div — HUD inputs have data-h, sync to sheet inputs with same data-h
+['ebm','ebb','ip','div'].forEach(key=>{
+  const hudEl=document.querySelector(`#pane-hud [data-h="${key}"]`);
+  const shEl=document.querySelector(`#pane-sheet [data-h="${key}"]`);
+  if(hudEl&&shEl) hudEl.addEventListener('input',()=>{ shEl.value=hudEl.value; });
+});
+
+// ═══════════════════════════════
+// SINGLE EVENT LISTENER ON SHEET
+// ═══════════════════════════════
+document.getElementById('pane-sheet').addEventListener('input', sync);
+document.getElementById('pane-sheet').addEventListener('change', sync);
+
+// ═══════════════════════════════
+// SAVE / LOAD / CLEAR
+// ═══════════════════════════════
+function collectData(){
+  const data={inputs:{},wounds,humanity,arsenal:[],cyberware:cyberData,inv:{w:[],a:[],g:[],d:[]},abilityIdx:document.getElementById('ability-select').value,avatar:avatarData};
+  document.querySelectorAll('#pane-sheet [data-h]').forEach(el=>{ data.inputs[el.dataset.h]=el.value; });
+  document.querySelectorAll('[data-skill]').forEach(el=>{ data.inputs['sk_'+el.dataset.skill]=el.value; });
+  ['hp-cur','hp-max','hum-cur','hum-max'].forEach(id=>{ const el=document.getElementById(id); if(el) data.inputs[id]=el.value; });
+  STAT_NAMES.forEach(s=>{ const el=document.getElementById('si-'+s); if(el) data.inputs['stat_'+s]=el.value; });
+  // Armor
+  ['head','body','shield'].forEach(p=>{ const el=document.getElementById('ar-'+p); if(el) data.inputs['armor_'+p]=el.value; });
+  qa2('#arsenal .ar').forEach(row=>data.arsenal.push(Array.from(row.querySelectorAll('input')).map(i=>i.value)));
+  ['w','a','g','d'].forEach(t=>qa2('#inv-'+t+' .ir').forEach(row=>data.inv[t].push(Array.from(row.querySelectorAll('input')).map(i=>i.value))));
+  return data;
+}
+const qa2=s=>document.querySelectorAll(s);
+
+function applyData(data){
+  if(data.inputs){
+    document.querySelectorAll('#pane-sheet [data-h]').forEach(el=>{ if(data.inputs[el.dataset.h]!==undefined) el.value=data.inputs[el.dataset.h]; });
+    document.querySelectorAll('[data-skill]').forEach(el=>{ const k='sk_'+el.dataset.skill; if(data.inputs[k]!==undefined) el.value=data.inputs[k]; });
+    ['hp-cur','hp-max','hum-cur','hum-max'].forEach(id=>{ const el=document.getElementById(id); if(el&&data.inputs[id]!==undefined) el.value=data.inputs[id]; });
+    STAT_NAMES.forEach(s=>{
+      const el=document.getElementById('si-'+s);
+      if(el&&data.inputs['stat_'+s]!==undefined){ el.value=data.inputs['stat_'+s]; document.getElementById('sv-'+s).textContent=el.value; }
+    });
+    // Armor
+    ['head','body','shield'].forEach(p=>{
+      const key='armor_'+p;
+      if(data.inputs[key]!==undefined){ const el=document.getElementById('ar-'+p); if(el){el.value=data.inputs[key]; adjArmor(p,0);} }
+    });
+  }
+  if(data.wounds!==undefined){wounds=data.wounds;renderWounds();}
+  if(data.humanity!==undefined){humanity=data.humanity;renderHum();}
+  onRoleChange();
+  if(data.abilityIdx!==undefined){ document.getElementById('ability-select').value=data.abilityIdx; onAbilityChange(); }
+  document.getElementById('arsenal').innerHTML='';
+  (data.arsenal||[]).forEach(v=>addWeapon(v)); if(!(data.arsenal||[]).length) addWeapon();
+  // Cyberware CP2077 restore
+  if(data.cyberware && typeof data.cyberware === 'object' && !Array.isArray(data.cyberware)){
+    Object.keys(CYBER_ZONES).forEach(z=>{ cyberData[z]=data.cyberware[z]||[]; });
+    buildCyberUI(); updateCyberHum();
+  }
+  ['w','a','g','d'].forEach(t=>{ document.getElementById('inv-'+t).innerHTML=''; (data.inv?.[t]||[]).forEach(v=>addInv(t,v)); });
+  countInv(); updateStatPts(); sync();
+  // Restore avatar
+  if(data.avatar){
+    avatarData=data.avatar;
+    const img=document.getElementById('avatar-img');
+    const ph=document.getElementById('avatar-ph');
+    if(img){ img.src=avatarData; img.classList.add('loaded'); }
+    if(ph){ ph.style.display='none'; }
+    const hudAv=document.getElementById('H_avatar_img');
+    if(hudAv){ hudAv.innerHTML=`<img src="${avatarData}" style="width:100%;height:100%;object-fit:cover;min-height:160px;">`; }
+  }
+}
+
+function saveSheet(){
+  const data=collectData();
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  const n=(document.querySelector('#pane-sheet [data-h="nome"]')?.value||'personagem').trim().replace(/\s+/g,'_');
+  a.href=URL.createObjectURL(blob); a.download='cpred_'+n+'.json';
+  a.click(); URL.revokeObjectURL(a.href); toast('✓ SALVO — cpred_'+n+'.json');
+}
+
+function onLoad(e){
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{try{applyData(JSON.parse(ev.target.result));toast('✓ CARREGADO — '+f.name);}catch(err){toast('⚠ ERRO AO LER ARQUIVO',true);}};
+  r.readAsText(f); e.target.value='';
+}
+
+function clearSheet(){
+  if(!confirm('Limpar toda a ficha? Ação irreversível.'))return;
+  document.querySelectorAll('#pane-sheet [data-h]').forEach(el=>{ if(el.type==='number') el.value=el.defaultValue||0; else el.value=''; if(el.tagName==='SELECT') el.selectedIndex=0; });
+  document.querySelectorAll('[data-skill]').forEach(el=>el.value=0);
+  ['hp-cur','hp-max','hum-cur','hum-max'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.defaultValue||0;});
+  STAT_NAMES.forEach(s=>{const el=document.getElementById('si-'+s);if(el){el.value=5;document.getElementById('sv-'+s).textContent=5;}});
+  wounds=0; renderWounds(); humanity=30; renderHum();
+  document.getElementById('arsenal').innerHTML=''; addWeapon();
+  // Reset cyberware CP2077
+  Object.keys(CYBER_ZONES).forEach(z=>cyberData[z]=[]);
+  activeCyberZone=null; closeCyberDetail(); buildCyberUI(); updateCyberHum();
+  // Reset avatar
+  avatarData=null;
+  const avImg=document.getElementById('avatar-img'); if(avImg){avImg.src='';avImg.classList.remove('loaded');}
+  const avPh=document.getElementById('avatar-ph'); if(avPh){avPh.style.display='';}
+  const hudAv=document.getElementById('H_avatar_img'); if(hudAv){hudAv.innerHTML='<span style="font-size:3rem;">🤖</span>';}
+  // Reset armor
+  ['head','body','shield'].forEach(p=>{const el=document.getElementById('ar-'+p);if(el)el.value=0;adjArmor(p,0);});
+  ['w','a','g','d'].forEach(t=>document.getElementById('inv-'+t).innerHTML='');
+  document.getElementById('ability-select').innerHTML='<option value="">— Selecione o Role primeiro —</option>';
+  document.getElementById('ability-effect-title').textContent='';
+  document.getElementById('ability-effect-text').textContent='Selecione uma habilidade acima para ver a descrição.';
+  countInv(); sync(); toast('FICHA LIMPA');
+}
+
+function toast(msg,err){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.borderColor=err?'var(--red)':'#00cc66'; t.style.color=err?'var(--red)':'#00cc66';
+  t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),3000);
+}
+
+// ═══════════════════════════════
+// DICE ROLLER
+// ═══════════════════════════════
+const diceHistory = [];
+
+function rollOneDie(sides){ return Math.floor(Math.random()*sides)+1; }
+
+function displayRoll(qty, sides, mod, rolls){
+  const total = rolls.reduce((a,b)=>a+b,0) + mod;
+  const label = qty+'d'+sides+(mod!==0?(mod>0?'+'+mod:mod):'');
+  document.getElementById('dice-total').textContent = total;
+  document.getElementById('dice-detail').textContent = 'Rolagens: ['+rolls.join(', ')+']'+(mod?'  mod '+(mod>0?'+':'')+mod:'')+'  =  '+total;
+  const tag = document.getElementById('dice-tag');
+  tag.textContent=''; tag.className='dice-tag';
+  if(sides===10 && qty===1){
+    if(total-mod===10){ tag.textContent='⚡ CRÍTICO — Role mais 1d10 e adicione!'; tag.className='dice-tag crit'; }
+    else if(total-mod===1){ tag.textContent='💀 FUMBLE — Role mais 1d10 e subtraia!'; tag.className='dice-tag fumble'; }
+  }
+  // history
+  diceHistory.unshift({label, total});
+  if(diceHistory.length>8) diceHistory.pop();
+  const hel = document.getElementById('dice-history');
+  hel.innerHTML = diceHistory.map(h=>`<div class="dice-hist-entry"><span>${h.label}</span><span class="hval">${h.total}</span></div>`).join('');
+}
+
+function rollDice(){
+  const qty   = Math.max(1, Math.min(20, parseInt(document.getElementById('dice-qty').value)||1));
+  const sides = Math.max(2, Math.min(100, parseInt(document.getElementById('dice-sides').value)||10));
+  const mod   = parseInt(document.getElementById('dice-mod').value)||0;
+  const rolls = Array.from({length:qty}, ()=>rollOneDie(sides));
+  displayRoll(qty, sides, mod, rolls);
+}
+
+function quickRoll(sides, btn){
+  btn.classList.add('rolling');
+  setTimeout(()=>btn.classList.remove('rolling'), 400);
+  document.getElementById('dice-sides').value = sides;
+  document.getElementById('dice-qty').value = 1;
+  document.getElementById('dice-mod').value = 0;
+  const rolls = [rollOneDie(sides)];
+  displayRoll(1, sides, 0, rolls);
+}
+
+// ═══════════════════════════════
+// AVATAR IMAGE UPLOAD
+// ═══════════════════════════════
+let avatarData = null;
+
+function loadAvatar(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    avatarData = ev.target.result;
+    const img = document.getElementById('avatar-img');
+    const ph  = document.getElementById('avatar-ph');
+    img.src = avatarData;
+    img.classList.add('loaded');
+    ph.style.display = 'none';
+    // Also update HUD avatar
+    const hudAv = document.getElementById('H_avatar_img');
+    if(hudAv){ hudAv.innerHTML=`<img src="${avatarData}" style="width:100%;height:100%;object-fit:cover;min-height:160px;">`; }
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+
+function removeAvatar(e){
+  e.stopPropagation();
+  avatarData = null;
+  const img = document.getElementById('avatar-img');
+  const ph  = document.getElementById('avatar-ph');
+  img.src=''; img.classList.remove('loaded');
+  ph.style.display='';
+  const hudAv = document.getElementById('H_avatar_img');
+  if(hudAv){ const role=document.querySelector('[data-h="role"]')?.value; hudAv.innerHTML='<span style="font-size:3rem;">'+(ICONS[role]||'🤖')+'</span>'; }
+}
+
+
+// ── estado dos modais de preset (declarado aqui para evitar TDZ) ──
+let weaponCatActive = 'Pistolas';
+let cyberCatActive  = 'Córtex Frontal / Cabeça';
+let weaponTargetRow = null;
+let cyberModalTargetZone = null;
+
+
+// ═══════════════════════════════
+// INIT PRESETS (runs after all consts declared)
+// ═══════════════════════════════
+function initPresets(){
+  // ensure cyberData has all preset zones
+  if(typeof CYBER_PRESETS !== 'undefined'){
+    Object.values(CYBER_PRESETS).forEach(p=>{ if(p.zone && !cyberData[p.zone]) cyberData[p.zone]=[]; });
+    cyberCatActive = Object.keys(CYBER_PRESETS)[0];
+  }
+  if(typeof WEAPON_PRESETS !== 'undefined'){
+    weaponCatActive = Object.keys(WEAPON_PRESETS)[0];
+  }
+  // safe addEventListener (elements exist by now)
+  const wOv = document.getElementById('weapon-modal-overlay');
+  if(wOv) wOv.addEventListener('click', e=>{ if(e.target===wOv) closeWeaponModal(); });
+  const cOv = document.getElementById('cyber-modal-overlay');
+  if(cOv) cOv.addEventListener('click', e=>{ if(e.target===cOv) closeCyberModal(); });
+}
+
+// ─── INIT ────────────────────
+addWeapon(); addInv('w'); addInv('g');
+updateStatPts();
+initPresets();
+buildCyberUI();
+updateCyberHum();
+sync();
+
+// ═══════════════════════════════════════════════════════
+// WEAPON MODAL
+// ═══════════════════════════════════════════════════════
+// weaponCatActive declared earlier
+// weaponTargetRow declared above
+
+function openWeaponModal(){
+  buildWeaponTabs();
+  renderWeaponCards();
+  document.getElementById('weapon-search').value='';
+  document.getElementById('weapon-modal-overlay').classList.add('open');
+}
+function closeWeaponModal(){
+  document.getElementById('weapon-modal-overlay').classList.remove('open');
+  weaponTargetRow = null;
+}
+// weapon-modal-overlay listener registered in initPresets()
+
+function buildWeaponTabs(){
+  const el = document.getElementById('weapon-tabs');
+  el.innerHTML = Object.keys(WEAPON_PRESETS).map(cat=>
+    `<button class="preset-tab${cat===weaponCatActive?' on':''}" onclick="weaponCatActive='${cat}';buildWeaponTabs();renderWeaponCards()">${cat.toUpperCase()}</button>`
+  ).join('');
+}
+
+function renderWeaponCards(filter=''){
+  filter = (filter||document.getElementById('weapon-search').value||'').toLowerCase();
+  const body = document.getElementById('weapon-body');
+  const list = WEAPON_PRESETS[weaponCatActive] || [];
+  const filtered = list.filter(w=> !filter || w.name.toLowerCase().includes(filter) || w.desc.toLowerCase().includes(filter));
+  if(!filtered.length){ body.innerHTML='<div class="preset-empty">NENHUMA ARMA ENCONTRADA</div>'; return; }
+  body.innerHTML = '<div class="preset-grid">'+filtered.map(w=>`
+    <div class="preset-card" onclick="selectWeaponPreset(${JSON.stringify(w).replace(/"/g,'&quot;')})">
+      <span class="preset-card-type">${w.type}</span>
+      <div class="preset-card-name">${w.name}</div>
+      <div class="preset-card-stats">
+        <span class="preset-stat dmg">DMG ${w.dmg}</span>
+        <span class="preset-stat rof">ROF ${w.rof}</span>
+        <span class="preset-stat rng">${w.range}</span>
+        <span class="preset-stat rng">CONC ${w.conc}</span>
+        <span class="preset-stat cost">${w.cost} Eb</span>
+      </div>
+      <div class="preset-card-desc">${w.desc}</div>
+      <button class="preset-add-btn">+ ADICIONAR AO ARSENAL</button>
+    </div>`).join('')+'</div>';
+}
+
+function filterPresets(which){
+  if(which==='weapon') renderWeaponCards();
+  else renderCyberCards();
+}
+
+function selectWeaponPreset(w){
+  addWeapon([w.name, w.dmg, String(w.rof), w.range+' / '+w.conc]);
+  toast('✓ '+w.name+' adicionada ao Arsenal');
+  closeWeaponModal();
+}
+
+// ═══════════════════════════════════════════════════════
+// CYBER MODAL
+// ═══════════════════════════════════════════════════════
+// cyberCatActive declared earlier
+// cyberModalTargetZone declared above
+
+function openCyberModal(zone){
+  cyberModalTargetZone = zone || null;
+  // if zone given, jump to matching preset category using presetCat
+  if(zone && CYBER_ZONES[zone]){
+    const cat = CYBER_ZONES[zone].presetCat;
+    if(cat && CYBER_PRESETS[cat]) cyberCatActive = cat;
+    else {
+      // fallback: find by zone field
+      const match = Object.entries(CYBER_PRESETS).find(([k,v])=>v.zone===zone);
+      if(match) cyberCatActive = match[0];
+    }
+  }
+  // update title
+  const z = zone ? CYBER_ZONES[zone] : null;
+  document.getElementById('cyber-modal-title').textContent = z ? '⚙ '+z.label.toUpperCase()+' — IMPLANTES' : '⚙ CYBERWARE — PRESETS';
+  buildCyberTabs();
+  renderCyberCards();
+  document.getElementById('cyber-search').value='';
+  document.getElementById('cyber-modal-overlay').classList.add('open');
+}
+function closeCyberModal(){
+  document.getElementById('cyber-modal-overlay').classList.remove('open');
+  cyberModalTargetZone = null;
+}
+// cyber-modal-overlay listener registered in initPresets()
+
+function buildCyberTabs(){
+  const el = document.getElementById('cyber-tabs');
+  el.innerHTML = Object.keys(CYBER_PRESETS).map(cat=>
+    `<button class="preset-tab${cat===cyberCatActive?' on':''}" onclick="cyberCatActive='${cat}';buildCyberTabs();renderCyberCards()">${cat.toUpperCase()}</button>`
+  ).join('');
+}
+
+function renderCyberCards(filter=''){
+  filter = (filter||document.getElementById('cyber-search').value||'').toLowerCase();
+  const body = document.getElementById('cyber-body');
+  const cat = CYBER_PRESETS[cyberCatActive];
+  if(!cat){ body.innerHTML='<div class="preset-empty">CATEGORIA NÃO ENCONTRADA</div>'; return; }
+  const filtered = cat.items.filter(c=> !filter || c.name.toLowerCase().includes(filter) || c.desc.toLowerCase().includes(filter));
+  if(!filtered.length){ body.innerHTML='<div class="preset-empty">NENHUM IMPLANTE ENCONTRADO</div>'; return; }
+  const zoneKey = cat.zone || 'head';
+  body.innerHTML = '<div class="preset-grid">'+filtered.map(c=>`
+    <div class="preset-card" onclick="selectCyberPreset(${JSON.stringify(c).replace(/"/g,'&quot;')}, '${zoneKey}')">
+      <div class="preset-card-name">${c.name}</div>
+      <div class="preset-card-stats">
+        <span class="preset-stat hum">HUM ${c.hum}</span>
+        <span class="preset-stat cost">${c.cost} Eb</span>
+      </div>
+      <div class="preset-card-desc">${c.desc}</div>
+      <button class="preset-add-btn">+ INSTALAR IMPLANTE</button>
+    </div>`).join('')+'</div>';
+}
+
+function selectCyberPreset(c, defaultZone){
+  // prefer the zone the user opened the modal from
+  let targetZone = cyberModalTargetZone || defaultZone;
+  // if targetZone not in cyberData keys, fall back to defaultZone
+  if(!CYBER_ZONES[targetZone]) targetZone = defaultZone;
+  if(!cyberData[targetZone]) cyberData[targetZone]=[];
+  const z = CYBER_ZONES[targetZone];
+  if(z && cyberData[targetZone].length >= z.slots){
+    toast('⚠ SLOTS CHEIOS — '+(z?z.label:targetZone), true); return;
+  }
+  cyberData[targetZone].push({ name:c.name, hum:c.hum });
+  updateCyberHum(); buildCyberUI();
+  if(activeCyberZone===targetZone) renderCyberDetail();
+  toast('✓ '+c.name+' instalado em '+(z?z.label:targetZone));
+  closeCyberModal();
+  sync();
+}
+
+
+// ═══════════════════════════════
+// QUICK-ADJUST STEPPERS
+// ═══════════════════════════════
+function qa(id, delta, min, max){
+  const el = document.getElementById(id);
+  if(!el) return;
+  let v = parseInt(el.value)||0;
+  v = Math.max(min??-999, Math.min(max??9999, v+delta));
+  el.value = v;
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+  sync();
+}
+</script>
+
+<!-- ═══ MODAL ARMAS ═══ -->
+<div class="preset-overlay" id="weapon-modal-overlay">
+  <div class="preset-modal" id="weapon-modal">
+    <div class="preset-modal-header">
+      <span class="preset-modal-title">⚔ ARSENAL — PRESETS</span>
+      <input class="preset-search" id="weapon-search" placeholder="BUSCAR ARMA..." oninput="filterPresets('weapon')">
+      <button class="preset-modal-close" onclick="closeWeaponModal()">✕ FECHAR</button>
+    </div>
+    <div class="preset-tabs" id="weapon-tabs"></div>
+    <div class="preset-body" id="weapon-body"></div>
+  </div>
+</div>
+
+<!-- ═══ MODAL CYBERWARE ═══ -->
+<div class="preset-overlay" id="cyber-modal-overlay">
+  <div class="preset-modal cyber-modal" id="cyber-modal">
+    <div class="preset-modal-header">
+      <span class="preset-modal-title" id="cyber-modal-title">⚙ CYBERWARE — PRESETS</span>
+      <input class="preset-search" id="cyber-search" placeholder="BUSCAR IMPLANTE..." oninput="filterPresets('cyber')">
+      <button class="preset-modal-close" onclick="closeCyberModal()">✕ FECHAR</button>
+    </div>
+    <div class="preset-tabs" id="cyber-tabs"></div>
+    <div class="preset-body" id="cyber-body"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MULTIPLAYER — FIREBASE SYNC LAYER
+     Injeta sincronização sem modificar a lógica original
+════════════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, onValue, push, update, off }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// ─── CONFIG — mesma do index.html e master.html ────────
+const firebaseConfig = {
+const firebaseConfig = {
+  apiKey: "AIzaSyD3NOMlLrQTTHYtFm_J91j1SFU8cOp1kG0",
+  authDomain: "cyberpunkred-48a5e.firebaseapp.com",
+  projectId: "cyberpunkred-48a5e",
+  storageBucket: "cyberpunkred-48a5e.firebasestorage.app",
+  messagingSenderId: "351008003096",
+  appId: "1:351008003096:web:3fd9c760f6fccb39f81f6d"
+};
+
+// ─── URL params ───────────────────────────────────────
+const params   = new URLSearchParams(location.search);
+const SESSION  = params.get('session')  || '';
+const PLAYER   = params.get('player')  || '';
+const NAME     = params.get('name')    || '';
+const IS_VIEWER = params.get('viewer') === 'master';
+
+const IS_MULTIPLAYER = !!(SESSION && PLAYER);
+
+if(!IS_MULTIPLAYER){
+  // Modo local normal — sem Firebase
+  console.log('[Multiplayer] Modo local — sem sessão ativa');
+} else {
+  // ─── Init Firebase ───────────────────────────────
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  const sessionRef = ref(db, 'sessions/'+SESSION);
+  const playerRef  = ref(db, 'sessions/'+SESSION+'/players/'+PLAYER);
+  const chatRef    = ref(db, 'sessions/'+SESSION+'/chat');
+
+  // UI refs
+  const mpBar    = document.getElementById('mp-bar');
+  const mpDot    = document.getElementById('mp-dot');
+  const mpStatus = document.getElementById('mp-status-label');
+  const mpLabel  = document.getElementById('mp-player-label');
+  const mpSess   = document.getElementById('mp-session-label');
+  const mpViewer = document.getElementById('mp-viewer-badge');
+
+  if(mpBar)    mpBar.classList.remove('offline');
+  if(mpLabel)  mpLabel.textContent = NAME || PLAYER;
+  if(mpSess)   mpSess.textContent  = 'SESSÃO: '+SESSION;
+  if(IS_VIEWER && mpViewer) mpViewer.style.display = 'block';
+
+  // ─── Desabilita edição se mestre visualizando ─────
+  if(IS_VIEWER){
+    document.querySelectorAll('input,select,textarea,button').forEach(el=>{
+      if(!el.classList.contains('ptab') && !el.closest('.ptabs')) {
+        el.disabled = true;
+        el.style.pointerEvents = 'none';
+      }
+    });
+    if(mpStatus) mpStatus.textContent = 'VISUALIZANDO';
+  }
+
+  // ─── Throttle para não sobrecarregar Firebase ─────
+  let syncTimer = null;
+  let lastSyncData = '';
+
+  function scheduleUpload(){
+    if(IS_VIEWER) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(uploadSheet, 1200);
+  }
+
+  async function uploadSheet(){
+    if(!window.collectData) return;
+    const data = window.collectData();
+    const json = JSON.stringify(data);
+    if(json === lastSyncData) return; // nada mudou
+    lastSyncData = json;
+
+    try {
+      if(mpStatus){ mpStatus.textContent='SINCRONIZANDO...'; mpStatus.classList.add('sync'); }
+      await set(playerRef, { name: NAME, online: true, joinedAt: Date.now(), sheetData: data });
+      if(mpDot)    mpDot.classList.remove('off');
+      if(mpStatus){ mpStatus.textContent='SINCRONIZADO ✓'; setTimeout(()=>{ if(mpStatus) mpStatus.textContent='ONLINE'; mpStatus.classList.remove('sync'); },1500); }
+    } catch(e){
+      if(mpDot)    mpDot.classList.add('off');
+      if(mpStatus) mpStatus.textContent = '⚠ ERRO DE SYNC';
+      console.error('[Multiplayer] Upload error:', e);
+    }
+  }
+
+  // ─── Intercepta o sync() original para disparar upload ─
+  const origSync = window.sync;
+  window.sync = function(...args){
+    if(origSync) origSync.apply(this, args);
+    scheduleUpload();
+  };
+
+  // ─── Se for viewer (mestre), ouve atualizações do player ─
+  if(IS_VIEWER){
+    onValue(playerRef, snap=>{
+      const data = snap.val();
+      if(data?.sheetData && window.applyData){
+        window.applyData(data.sheetData);
+      }
+      if(mpStatus) mpStatus.textContent = data?.online ? 'ONLINE ✓' : 'OFFLINE';
+    });
+  }
+
+  // ─── Chat listener — aparece no rolador de dados ──────
+  onValue(chatRef, snap=>{
+    const msgs = snap.val() || {};
+    renderMpChat(msgs);
+  });
+
+  function renderMpChat(msgs){
+    const histEl = document.getElementById('dice-history');
+    if(!histEl) return;
+    const sorted = Object.values(msgs)
+      .filter(m=>m.type==='dice')
+      .sort((a,b)=>b.ts-a.ts)
+      .slice(0,8);
+    if(!sorted.length) return;
+
+    const extra = sorted.map(m=>`
+      <div class="dice-hist-entry" style="border-left:2px solid var(--yel);padding-left:6px;">
+        <span style="color:var(--dim);font-size:0.6rem;">${m.who}</span>
+        <span class="hval">${m.text.match(/\*\*(\d+)\*\*/)?.[1]||'?'}</span>
+      </div>`).join('');
+    histEl.innerHTML = extra;
+  }
+
+  // ─── Roladas são enviadas ao chat da sessão ───────────
+  const origDisplayRoll = window.displayRoll;
+  window.displayRoll = function(qty, sides, mod, rolls){
+    if(origDisplayRoll) origDisplayRoll.apply(this, arguments);
+    const total = rolls.reduce((a,b)=>a+b,0) + mod;
+    const label = qty+'d'+sides+(mod?(mod>0?'+'+mod:mod):'');
+    push(chatRef, {
+      who: '🎲 '+NAME,
+      text: `Rolou ${label} → **${total}** [${rolls.join(', ')}]${mod?' mod '+(mod>0?'+':'')+mod:''}`,
+      type: 'dice', ts: Date.now()
+    }).catch(()=>{});
+  };
+
+  // ─── Marca online / offline ────────────────────────
+  async function markOnline(){
+    try { await update(playerRef, { online: true, name: NAME }); } catch(e){}
+  }
+  window.addEventListener('beforeunload', ()=>{
+    update(playerRef, { online: false }).catch(()=>{});
+  });
+
+  // ─── Listen data from master (postMessage from iframe) ──
+  window.addEventListener('message', e=>{
+    if(e.data?.type==='LOAD_DATA' && window.applyData){
+      window.applyData(e.data.data);
+    }
+  });
+
+  // ─── Start ─────────────────────────────────────────
+  markOnline();
+  setTimeout(()=>{
+    uploadSheet();
+    if(mpStatus) mpStatus.textContent = 'ONLINE';
+  }, 800);
+
+  console.log('[Multiplayer] Sessão:', SESSION, '| Player:', PLAYER, '| Viewer:', IS_VIEWER);
+}
+</script>
+
+</body>
+</html>

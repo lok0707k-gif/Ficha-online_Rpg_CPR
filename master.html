@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyberpunk RED — Painel do Mestre</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, get, onValue, push, remove, serverTimestamp, update, off }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// ─── SUBSTITUA COM SUA CONFIG ────────────────
+const firebaseConfig = {
+  const firebaseConfig = {
+  apiKey: "AIzaSyD3NOMlLrQTTHYtFm_J91j1SFU8cOp1kG0",
+  authDomain: "cyberpunkred-48a5e.firebaseapp.com",
+  projectId: "cyberpunkred-48a5e",
+  storageBucket: "cyberpunkred-48a5e.firebasestorage.app",
+  messagingSenderId: "351008003096",
+  appId: "1:351008003096:web:3fd9c760f6fccb39f81f6d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+window._db=db; window._ref=ref; window._set=set; window._get=get;
+window._onValue=onValue; window._push=push; window._remove=remove;
+window._ts=serverTimestamp; window._update=update; window._off=off;
+document.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<style>
+:root{
+  --bg:#050609;--panel:#09090e;--panel2:#0d0d14;--border:#0e1a2a;
+  --red:#ff003c;--yel:#f5c518;--blu:#00d4ff;--cyan:#00ffcc;
+  --text:#c8dde8;--dim:#2a4a5a;
+  --mono:'Share Tech Mono',monospace;--disp:'Orbitron',sans-serif;--fm:'Rajdhani',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--fm);min-height:100vh;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 59px,#0a1520 59px,#0a1520 60px),
+  repeating-linear-gradient(90deg,transparent,transparent 59px,#0a1520 59px,#0a1520 60px);}
+
+/* HEADER */
+header{background:#07070e;border-bottom:2px solid var(--red);padding:0 24px;
+  display:flex;align-items:center;gap:16px;height:56px;box-shadow:0 2px 20px #ff003c22;}
+.h-logo{font-family:var(--disp);font-size:0.8rem;color:var(--red);letter-spacing:3px;}
+.h-code{font-family:var(--mono);font-size:1rem;color:var(--yel);letter-spacing:4px;
+  background:#0a0800;border:1px solid #3a2800;padding:4px 12px;cursor:pointer;user-select:all;
+  transition:all .2s;}
+.h-code:hover{border-color:var(--yel);box-shadow:0 0 10px #f5c51844;}
+.h-code-label{font-family:var(--mono);font-size:0.55rem;color:var(--dim);letter-spacing:2px;}
+.h-campaign{font-family:var(--mono);font-size:0.7rem;color:var(--dim);margin-left:auto;}
+.h-master{font-family:var(--mono);font-size:0.7rem;color:var(--cyan);}
+.h-back{font-family:var(--mono);font-size:0.6rem;color:var(--dim);border:1px solid var(--border);
+  padding:4px 10px;cursor:pointer;background:transparent;letter-spacing:1px;transition:all .2s;text-decoration:none;}
+.h-back:hover{border-color:var(--red);color:var(--red);}
+
+/* LAYOUT */
+.main{display:grid;grid-template-columns:280px 1fr 300px;gap:0;height:calc(100vh - 56px);}
+
+/* LEFT — Players */
+.sidebar{background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-title{font-family:var(--disp);font-size:0.6rem;letter-spacing:4px;color:var(--red);
+  padding:14px 16px 10px;border-bottom:1px solid var(--border);}
+.players-list{flex:1;overflow-y:auto;padding:12px;}
+.player-card{background:var(--panel2);border:1px solid var(--border);border-left:2px solid var(--dim);
+  padding:12px;margin-bottom:10px;cursor:pointer;transition:all .2s;}
+.player-card:hover,.player-card.active{border-left-color:var(--blu);background:#0a0f1a;}
+.player-card.online{border-left-color:var(--cyan);}
+.pc-name{font-family:var(--disp);font-size:0.8rem;color:var(--text);margin-bottom:2px;}
+.pc-char{font-family:var(--mono);font-size:0.65rem;color:var(--dim);}
+.pc-stats{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+.pc-stat{font-family:var(--mono);font-size:0.6rem;padding:2px 6px;border:1px solid var(--border);}
+.pc-stat.hp-ok{color:var(--cyan);border-color:var(--cyan);background:#00ffcc10;}
+.pc-stat.hp-warn{color:var(--yel);border-color:var(--yel);background:#f5c51810;}
+.pc-stat.hp-crit{color:var(--red);border-color:var(--red);background:#ff003c10;}
+.pc-online{width:7px;height:7px;border-radius:50%;background:var(--dim);display:inline-block;margin-right:6px;}
+.pc-online.on{background:var(--cyan);box-shadow:0 0 6px var(--cyan);}
+.no-players{font-family:var(--mono);font-size:0.65rem;color:var(--dim);text-align:center;padding:24px;letter-spacing:2px;line-height:2;}
+
+/* CENTER — Ficha do player selecionado */
+.sheet-view{overflow-y:auto;background:#07070d;}
+.sheet-frame{width:100%;height:100%;border:none;}
+.sheet-placeholder{display:flex;align-items:center;justify-content:center;height:100%;
+  flex-direction:column;gap:16px;color:var(--dim);}
+.sheet-placeholder .ico{font-size:3rem;opacity:.3;}
+.sheet-placeholder p{font-family:var(--mono);font-size:0.7rem;letter-spacing:3px;text-align:center;line-height:2;}
+
+/* RIGHT — Chat + Dice */
+.right-panel{background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;}
+
+/* DICE SECTION */
+.dice-section{padding:14px 16px;border-bottom:1px solid var(--border);}
+.section-title{font-family:var(--disp);font-size:0.6rem;letter-spacing:4px;color:var(--yel);margin-bottom:10px;}
+.dice-row{display:flex;gap:6px;flex-wrap:wrap;}
+.die-btn{
+  background:#07080f;border:1px solid var(--border);color:var(--dim);
+  font-family:var(--mono);font-size:0.65rem;padding:5px 8px;cursor:pointer;transition:all .15s;
+}
+.die-btn:hover{border-color:var(--yel);color:var(--yel);box-shadow:0 0 8px #f5c51844;}
+.dice-formula{display:flex;gap:6px;align-items:center;margin-top:8px;}
+.dice-formula input{width:44px;background:#060a10;border:1px solid var(--border);border-bottom:1px solid var(--yel);
+  color:var(--text);font-family:var(--mono);font-size:0.8rem;padding:4px 6px;outline:none;text-align:center;}
+.dice-formula label{font-family:var(--mono);font-size:0.65rem;color:var(--dim);}
+.roll-btn{flex:1;background:transparent;border:1px solid var(--yel);color:var(--yel);
+  font-family:var(--mono);font-size:0.65rem;padding:5px 8px;cursor:pointer;letter-spacing:2px;transition:all .2s;}
+.roll-btn:hover{background:#f5c51815;box-shadow:0 0 10px #f5c51844;}
+.dice-result{background:#060a10;border:1px solid var(--border);border-left:2px solid var(--yel);
+  padding:8px 12px;margin-top:8px;font-family:var(--mono);font-size:0.7rem;color:var(--dim);min-height:36px;}
+.dice-result .total{font-family:var(--disp);font-size:1.3rem;color:var(--yel);font-weight:700;}
+
+/* CHAT */
+.chat-section{flex:1;display:flex;flex-direction:column;min-height:0;}
+.chat-title{font-family:var(--disp);font-size:0.6rem;letter-spacing:4px;color:var(--blu);
+  padding:12px 16px 8px;border-bottom:1px solid var(--border);}
+.chat-log{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:6px;}
+.chat-msg{font-family:var(--mono);font-size:0.68rem;line-height:1.5;padding:6px 10px;
+  background:var(--panel2);border-left:2px solid var(--border);}
+.chat-msg.master{border-left-color:var(--red);}
+.chat-msg.dice{border-left-color:var(--yel);background:#0a0900;}
+.chat-msg.system{border-left-color:var(--dim);color:var(--dim);}
+.chat-msg .who{font-size:0.6rem;margin-bottom:2px;}
+.chat-msg.master .who{color:var(--red);}
+.chat-msg.dice .who{color:var(--yel);}
+.chat-msg .text{color:var(--text);}
+.chat-input-row{display:flex;gap:6px;padding:10px 14px;border-top:1px solid var(--border);}
+.chat-input{flex:1;background:#060a10;border:1px solid var(--border);border-bottom:1px solid var(--red);
+  color:var(--text);font-family:var(--mono);font-size:0.75rem;padding:6px 8px;outline:none;}
+.chat-input:focus{border-color:var(--red);}
+.chat-send{background:transparent;border:1px solid var(--red);color:var(--red);
+  font-family:var(--mono);font-size:0.65rem;padding:6px 12px;cursor:pointer;letter-spacing:2px;transition:all .2s;}
+.chat-send:hover{background:#ff003c15;}
+
+/* Notification badge */
+.notif{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);
+  box-shadow:0 0 6px var(--red);margin-left:6px;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Toast */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#09090e;border:1px solid var(--cyan);color:var(--cyan);
+  font-family:var(--mono);font-size:0.7rem;padding:8px 20px;letter-spacing:2px;
+  opacity:0;transition:all .3s;pointer-events:none;z-index:9999;}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* responsive */
+@media(max-width:900px){
+  .main{grid-template-columns:1fr;grid-template-rows:auto 1fr auto;}
+  .sidebar{max-height:200px;border-right:none;border-bottom:1px solid var(--border);}
+  .right-panel{max-height:340px;border-left:none;border-top:1px solid var(--border);}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="h-logo">⚔ PAINEL DO MESTRE</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;margin-left:16px;">
+    <div class="h-code-label">CÓDIGO DA SESSÃO — COMPARTILHE COM OS PLAYERS</div>
+    <div class="h-code" id="session-code-display" onclick="copyCode()" title="Clique para copiar">—</div>
+  </div>
+  <div class="h-campaign" id="h-campaign">—</div>
+  <div class="h-master" id="h-master">—</div>
+  <a class="h-back" href="index.html">← LOBBY</a>
+</header>
+
+<div class="main">
+
+  <!-- LEFT: players list -->
+  <div class="sidebar">
+    <div class="sidebar-title">👥 JOGADORES NA SESSÃO</div>
+    <div class="players-list" id="players-list">
+      <div class="no-players">Aguardando jogadores...<br><br>Compartilhe o código<br>acima com seus players.</div>
+    </div>
+  </div>
+
+  <!-- CENTER: sheet iframe viewer -->
+  <div class="sheet-view" id="sheet-view">
+    <div class="sheet-placeholder">
+      <div class="ico">📋</div>
+      <p>Selecione um jogador<br>para ver sua ficha</p>
+    </div>
+  </div>
+
+  <!-- RIGHT: Dice + Chat -->
+  <div class="right-panel">
+
+    <!-- Dice Roller -->
+    <div class="dice-section">
+      <div class="section-title">🎲 ROLADOR — MESTRE</div>
+      <div class="dice-row">
+        <button class="die-btn" onclick="masterRoll(4)">D4</button>
+        <button class="die-btn" onclick="masterRoll(6)">D6</button>
+        <button class="die-btn" onclick="masterRoll(8)">D8</button>
+        <button class="die-btn" onclick="masterRoll(10)">D10</button>
+        <button class="die-btn" onclick="masterRoll(12)">D12</button>
+        <button class="die-btn" onclick="masterRoll(20)">D20</button>
+      </div>
+      <div class="dice-formula">
+        <input type="number" id="d-qty" value="1" min="1" max="20">
+        <label>D</label>
+        <input type="number" id="d-sides" value="10" min="2" max="100">
+        <label>+</label>
+        <input type="number" id="d-mod" value="0">
+        <button class="roll-btn" onclick="masterRollCustom()">▶ ROLAR</button>
+      </div>
+      <div class="dice-result" id="dice-result">
+        <span style="color:var(--dim);font-size:0.65rem;">Role acima para compartilhar com os players</span>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-section">
+      <div class="chat-title">💬 CHAT DA SESSÃO</div>
+      <div class="chat-log" id="chat-log"></div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chat-input" placeholder="Mensagem para os players..." maxlength="300">
+        <button class="chat-send" onclick="sendChat()">↑ ENVIAR</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────
+// URL params
+// ─────────────────────────────────────────────
+const params = new URLSearchParams(location.search);
+const SESSION  = params.get('session') || '';
+const MASTER   = params.get('name') || 'Mestre';
+
+if(!SESSION){ alert('Sessão não encontrada. Voltando ao lobby.'); location.href='index.html'; }
+
+document.getElementById('session-code-display').textContent = SESSION;
+document.getElementById('h-master').textContent = '⚔ ' + MASTER;
+
+let selectedPlayer = null;
+let players = {};
+let chatUnsubscribe = null;
+let diceUnsubscribe = null;
+let playersUnsubscribe = null;
+
+// ─────────────────────────────────────────────
+// Init after Firebase
+// ─────────────────────────────────────────────
+document.addEventListener('firebase-ready', ()=>{
+  loadSession();
+  listenPlayers();
+  listenChat();
+  listenDice();
+});
+
+async function loadSession(){
+  const snap = await window._get(window._ref(window._db, 'sessions/'+SESSION));
+  if(!snap.exists()){ alert('Sessão expirada.'); location.href='index.html'; return; }
+  const data = snap.val();
+  document.getElementById('h-campaign').textContent = '📁 ' + (data.campaign||'Sessão');
+}
+
+// ─────────────────────────────────────────────
+// Listen Players
+// ─────────────────────────────────────────────
+function listenPlayers(){
+  const r = window._ref(window._db, 'sessions/'+SESSION+'/players');
+  playersUnsubscribe = window._onValue(r, snap=>{
+    players = snap.val() || {};
+    renderPlayers();
+  });
+}
+
+function renderPlayers(){
+  const el = document.getElementById('players-list');
+  const keys = Object.keys(players);
+  if(!keys.length){
+    el.innerHTML = '<div class="no-players">Aguardando jogadores...<br><br>Compartilhe o código<br>acima com seus players.</div>';
+    return;
+  }
+  el.innerHTML = '';
+  keys.forEach(pid=>{
+    const p = players[pid];
+    const div = document.createElement('div');
+    div.className = 'player-card' + (p.online?' online':'') + (selectedPlayer===pid?' active':'');
+    div.onclick = ()=>selectPlayer(pid);
+
+    // HP display
+    let hpClass='hp-ok', hpTxt='HP —';
+    if(p.sheetData){
+      const hpc = p.sheetData.inputs?.['hp-cur'] || 0;
+      const hpm = p.sheetData.inputs?.['hp-max'] || 1;
+      const pct = hpc/hpm;
+      hpTxt = 'HP '+hpc+'/'+hpm;
+      hpClass = pct>0.5?'hp-ok':pct>0.2?'hp-warn':'hp-crit';
+    }
+    const charName = p.sheetData?.inputs?.nome || '—';
+    const role = p.sheetData?.inputs?.role || '—';
+    const wounds = p.sheetData?.wounds || 0;
+
+    div.innerHTML = `
+      <div class="pc-name">
+        <span class="pc-online ${p.online?'on':''}"></span>${p.name}
+      </div>
+      <div class="pc-char">${charName} · ${role}</div>
+      <div class="pc-stats">
+        <span class="pc-stat ${hpClass}">${hpTxt}</span>
+        ${wounds>0?`<span class="pc-stat hp-${wounds>=9?'crit':'warn'}">FERIMENTOS: ${wounds}</span>`:''}
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+function selectPlayer(pid){
+  selectedPlayer = pid;
+  renderPlayers();
+  const sv = document.getElementById('sheet-view');
+  // Show sheet in an iframe with the player's data
+  sv.innerHTML = `<iframe class="sheet-frame" id="player-frame" src="sheet.html?session=${SESSION}&player=${pid}&viewer=master" onload="injectPlayerData('${pid}')"></iframe>`;
+}
+
+function injectPlayerData(pid){
+  const frame = document.getElementById('player-frame');
+  if(!frame||!players[pid]?.sheetData) return;
+  try {
+    frame.contentWindow.postMessage({type:'LOAD_DATA', data: players[pid].sheetData}, '*');
+  } catch(e){}
+}
+
+// ─────────────────────────────────────────────
+// Chat
+// ─────────────────────────────────────────────
+function listenChat(){
+  const r = window._ref(window._db, 'sessions/'+SESSION+'/chat');
+  window._onValue(r, snap=>{
+    const msgs = snap.val() || {};
+    renderChat(msgs);
+  });
+}
+
+function renderChat(msgs){
+  const el = document.getElementById('chat-log');
+  const wasAtBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 60;
+  const sorted = Object.values(msgs).sort((a,b)=>a.ts-b.ts);
+  el.innerHTML = sorted.map(m=>`
+    <div class="chat-msg ${m.type||''}">
+      <div class="who">${m.who}</div>
+      <div class="text">${m.text}</div>
+    </div>`).join('');
+  if(wasAtBottom) el.scrollTop = el.scrollHeight;
+}
+
+async function sendChat(){
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if(!text) return;
+  inp.value = '';
+  const r = window._ref(window._db, 'sessions/'+SESSION+'/chat');
+  await window._push(r, { who:'⚔ '+MASTER, text, type:'master', ts: Date.now() });
+}
+
+document.getElementById('chat-input').addEventListener('keydown', e=>{ if(e.key==='Enter') sendChat(); });
+
+// ─────────────────────────────────────────────
+// Dice Log
+// ─────────────────────────────────────────────
+function listenDice(){
+  const r = window._ref(window._db, 'sessions/'+SESSION+'/diceLog');
+  window._onValue(r, snap=>{
+    // dice rolls appear in chat — handled via chat listener
+  });
+}
+
+function rollDie(sides){
+  return Math.floor(Math.random()*sides)+1;
+}
+
+async function masterRoll(sides){
+  const result = rollDie(sides);
+  document.getElementById('dice-result').innerHTML = `<span class="total">${result}</span> <span style="color:var(--dim);font-size:0.65rem;">— 1d${sides}</span>`;
+  const r = window._ref(window._db, 'sessions/'+SESSION+'/chat');
+  await window._push(r, {
+    who:'🎲 '+MASTER,
+    text:`Rolou 1d${sides} → **${result}**`,
+    type:'dice', ts:Date.now()
+  });
+}
+
+async function masterRollCustom(){
+  const qty   = Math.max(1,Math.min(20,parseInt(document.getElementById('d-qty').value)||1));
+  const sides = Math.max(2,Math.min(100,parseInt(document.getElementById('d-sides').value)||10));
+  const mod   = parseInt(document.getElementById('d-mod').value)||0;
+  const rolls = Array.from({length:qty},()=>rollDie(sides));
+  const total = rolls.reduce((a,b)=>a+b,0)+mod;
+  const label = qty+'d'+sides+(mod?(mod>0?'+'+mod:mod):'');
+
+  document.getElementById('dice-result').innerHTML =
+    `<span class="total">${total}</span> <span style="color:var(--dim);font-size:0.65rem;">— ${label} = [${rolls.join(', ')}]${mod?' mod '+(mod>0?'+':'')+mod:''}</span>`;
+
+  const r = window._ref(window._db, 'sessions/'+SESSION+'/chat');
+  await window._push(r, {
+    who:'🎲 '+MASTER,
+    text:`Rolou ${label} → **${total}** [${rolls.join(', ')}]${mod?' +mod '+mod:''}`,
+    type:'dice', ts:Date.now()
+  });
+}
+
+// ─────────────────────────────────────────────
+// Listen for player sheet updates → refresh view
+// ─────────────────────────────────────────────
+window.addEventListener('message', e=>{
+  if(e.data?.type==='SHEET_UPDATE' && selectedPlayer){
+    const frame = document.getElementById('player-frame');
+    if(frame) injectPlayerData(selectedPlayer);
+  }
+});
+
+// ─────────────────────────────────────────────
+function copyCode(){
+  navigator.clipboard?.writeText(SESSION).then(()=>toast('✓ Código copiado: '+SESSION));
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),3000);
+}
+</script>
+</body>
+</html>

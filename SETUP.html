@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyberpunk RED — Guia de Instalação</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050609;--panel:#09090e;--panel2:#0d0d14;--border:#0e1a2a;
+  --red:#ff003c;--yel:#f5c518;--blu:#00d4ff;--cyan:#00ffcc;
+  --text:#c8dde8;--dim:#2a4a5a;
+  --mono:'Share Tech Mono',monospace;--disp:'Orbitron',sans-serif;--fm:'Rajdhani',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--fm);padding:40px 20px 80px;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 59px,#0a1520 59px,#0a1520 60px),
+  repeating-linear-gradient(90deg,transparent,transparent 59px,#0a1520 59px,#0a1520 60px);}
+.wrap{max-width:780px;margin:0 auto;}
+h1{font-family:var(--disp);color:var(--red);font-size:1.4rem;letter-spacing:3px;margin-bottom:6px;}
+.sub{font-family:var(--mono);color:var(--dim);font-size:0.7rem;letter-spacing:3px;margin-bottom:36px;}
+h2{font-family:var(--disp);color:var(--cyan);font-size:0.8rem;letter-spacing:4px;margin:28px 0 12px;
+  display:flex;align-items:center;gap:10px;}
+h2::after{content:'';flex:1;height:1px;background:var(--border);}
+p{font-family:var(--mono);font-size:0.72rem;color:var(--dim);line-height:1.9;margin-bottom:10px;}
+p strong{color:var(--text);}
+a{color:var(--yel);text-decoration:none;}
+a:hover{text-decoration:underline;}
+code{background:#0a0f18;border:1px solid var(--border);border-left:2px solid var(--yel);
+  padding:12px 16px;display:block;font-family:var(--mono);font-size:0.72rem;color:var(--yel);
+  line-height:1.9;margin:10px 0;white-space:pre-wrap;word-break:break-all;}
+.step{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--blu);
+  padding:16px 20px;margin-bottom:12px;}
+.step-num{font-family:var(--disp);font-size:0.55rem;color:var(--blu);letter-spacing:4px;margin-bottom:6px;}
+.badge{display:inline-block;font-family:var(--mono);font-size:0.6rem;padding:2px 8px;border:1px solid;margin:0 3px;}
+.badge.free{color:var(--cyan);border-color:var(--cyan);}
+.badge.easy{color:#44ff88;border-color:#44ff88;}
+.files-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
+.file-card{background:var(--panel2);border:1px solid var(--border);padding:12px;}
+.file-name{font-family:var(--mono);font-size:0.75rem;color:var(--yel);margin-bottom:4px;}
+.file-desc{font-family:var(--mono);font-size:0.62rem;color:var(--dim);line-height:1.6;}
+.back{display:inline-block;font-family:var(--mono);font-size:0.65rem;color:var(--dim);
+  border:1px solid var(--border);padding:6px 14px;cursor:pointer;text-decoration:none;margin-bottom:24px;
+  transition:all .2s;}
+.back:hover{border-color:var(--blu);color:var(--blu);}
+.warning{background:#1a0a00;border:1px solid var(--yel);border-left:3px solid var(--yel);
+  padding:14px 18px;margin:14px 0;}
+.warning p{color:var(--yel);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← VOLTAR AO LOBBY</a>
+  <h1>GUIA DE INSTALAÇÃO</h1>
+  <p class="sub">◈ CYBERPUNK RED — MESA ONLINE MULTIPLAYER ◈</p>
+
+  <h2>ARQUIVOS DO PROJETO</h2>
+  <div class="files-grid">
+    <div class="file-card">
+      <div class="file-name">📄 index.html</div>
+      <div class="file-desc">Lobby: Mestre cria sessão, players entram com código</div>
+    </div>
+    <div class="file-card">
+      <div class="file-name">📄 master.html</div>
+      <div class="file-desc">Painel do Mestre: vê fichas, rola dados, envia mensagens</div>
+    </div>
+    <div class="file-card">
+      <div class="file-name">📄 sheet.html</div>
+      <div class="file-desc">Ficha do jogador com sync automático para Firebase</div>
+    </div>
+    <div class="file-card">
+      <div class="file-name">📄 SETUP.html</div>
+      <div class="file-desc">Este guia de instalação</div>
+    </div>
+  </div>
+
+  <h2>PASSO 1 — CRIAR PROJETO FIREBASE</h2>
+  <div class="step">
+    <div class="step-num">01</div>
+    <p>Acesse <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> e faça login com sua conta Google.</p>
+    <p>Clique em <strong>"Criar um projeto"</strong>, dê um nome (ex: cyberpunk-mesa), desative o Google Analytics (não é necessário) e clique em <strong>"Criar projeto"</strong>.</p>
+  </div>
+
+  <h2>PASSO 2 — ATIVAR REALTIME DATABASE</h2>
+  <div class="step">
+    <div class="step-num">02</div>
+    <p>No painel do projeto, clique em <strong>"Compilação"</strong> → <strong>"Realtime Database"</strong> → <strong>"Criar banco de dados"</strong>.</p>
+    <p>Escolha a região mais próxima (ex: <strong>us-central1</strong>) e selecione <strong>"Iniciar no modo de teste"</strong> (válido por 30 dias, depois configure as regras).</p>
+  </div>
+
+  <div class="warning">
+    <p>⚠ <strong>REGRAS DE SEGURANÇA (Após 30 dias):</strong><br>
+    No Realtime Database → Regras, use estas regras básicas para produção:</p>
+    <code>{
+  "rules": {
+    "sessions": {
+      "$sessionId": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}</code>
+  </div>
+
+  <h2>PASSO 3 — COPIAR CONFIGURAÇÃO</h2>
+  <div class="step">
+    <div class="step-num">03</div>
+    <p>No Firebase Console, vá em <strong>Configurações do projeto</strong> (ícone de engrenagem) → <strong>"Seus apps"</strong> → clique em <strong>"Web"</strong> (&lt;/&gt;) para registrar um app.</p>
+    <p>Dê um apelido (ex: "mesa-online") e copie o bloco <strong>firebaseConfig</strong> que aparece. Será algo assim:</p>
+    <code>const firebaseConfig = {
+  apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  authDomain: "meu-projeto.firebaseapp.com",
+  databaseURL: "https://meu-projeto-default-rtdb.firebaseio.com",
+  projectId: "meu-projeto",
+  storageBucket: "meu-projeto.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:abc123abc123"
+};</code>
+  </div>
+
+  <h2>PASSO 4 — COLAR NOS 3 ARQUIVOS</h2>
+  <div class="step">
+    <div class="step-num">04</div>
+    <p>Abra <strong>index.html</strong>, <strong>master.html</strong> e <strong>sheet.html</strong> em qualquer editor de texto (Notepad, VS Code, etc.).</p>
+    <p>Em cada arquivo, localize o bloco que começa com:</p>
+    <code>const firebaseConfig = {
+  apiKey: "AIzaSyDEMO_substitua_sua_chave_aqui",</code>
+    <p>Substitua <strong>todo o bloco</strong> pelo que você copiou do Firebase. Salve os 3 arquivos.</p>
+  </div>
+
+  <h2>PASSO 5 — HOSPEDAR OS ARQUIVOS</h2>
+  <div class="step">
+    <div class="step-num">05</div>
+    <p>Os 4 arquivos precisam estar no mesmo servidor web. Opções gratuitas:</p>
+    <p><strong>Opção A — GitHub Pages</strong> <span class="badge free">GRÁTIS</span> <span class="badge easy">FÁCIL</span><br>
+    Crie um repositório público no GitHub, faça upload dos 4 arquivos, ative Pages em Settings → Pages → Branch: main.</p>
+    <p><strong>Opção B — Netlify Drop</strong> <span class="badge free">GRÁTIS</span><br>
+    Acesse <a href="https://app.netlify.com/drop" target="_blank">app.netlify.com/drop</a>, arraste a pasta com os 4 arquivos. Pronto — URL gerada na hora.</p>
+    <p><strong>Opção C — Servidor Local</strong><br>
+    Se tiver Python: <code>python3 -m http.server 8080</code><br>
+    Acesse em <strong>http://localhost:8080</strong>. Só funciona na mesma rede local.</p>
+  </div>
+
+  <h2>COMO USAR — FLUXO DA SESSÃO</h2>
+  <div class="step">
+    <div class="step-num">MESTRE</div>
+    <p>1. Abra <strong>index.html</strong> → preencha seu nome → clique <strong>"CRIAR NOVA SESSÃO"</strong><br>
+    2. Você será redirecionado para o Painel do Mestre com um código tipo <strong>NEON-4729</strong><br>
+    3. Compartilhe esse código com seus jogadores<br>
+    4. Veja as fichas dos jogadores no painel central, role dados e envie mensagens</p>
+  </div>
+  <div class="step">
+    <div class="step-num">JOGADOR</div>
+    <p>1. Abra <strong>index.html</strong> → preencha seu nome/handle e o código recebido<br>
+    2. Clique <strong>"ENTRAR NA SESSÃO"</strong><br>
+    3. Sua ficha será aberta e sincronizará automaticamente a cada edição<br>
+    4. Roladas de dados aparecem no chat do Mestre em tempo real</p>
+  </div>
+
+  <h2>LIMITES DO PLANO GRATUITO FIREBASE</h2>
+  <p>O Firebase Realtime Database gratuito (Spark) suporta:<br>
+  <strong>100 conexões simultâneas · 1 GB de armazenamento · 10 GB/mês de transferência</strong><br>
+  Para uma mesa de RPG com 2-6 jogadores, isso é mais do que suficiente.</p>
+
+  <p style="margin-top:30px;"><a href="index.html">← Voltar ao Lobby</a></p>
+</div>
+</body>
+</html>
